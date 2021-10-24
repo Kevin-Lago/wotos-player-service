@@ -71,9 +71,9 @@ public class StatisticsService {
                     ExpectedStatistics expectedStatistic = mapper.treeToValue(value, ExpectedStatistics.class);
                     expectedStatistics.add(expectedStatistic);
 
-                    if (expectedStatisticsRepository.existsById(expectedStatistic.getTank_id())) {
-                        System.out.println("exists");
-                    }
+//                    if (expectedStatisticsRepository.existsById(expectedStatistic.getTankID())) {
+//                        System.out.println("exists");
+//                    }
                 } catch (JsonProcessingException e) {
                     System.out.println("Error fetching Expected Statistics values: " + e.getMessage());
                 }
