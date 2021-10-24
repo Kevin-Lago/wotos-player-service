@@ -11,34 +11,34 @@ public class PlayerDetails {
 
     @Id
     @Column(name = "account_id", nullable = false, unique = true)
-    private Integer account_id;
-    @Column(name = "account_id", nullable = false)
+    private Integer accountID;
+    @Column(name = "nickname", nullable = false)
     private String nickname;
     @Column(name = "last_battle_time", nullable = false)
-    private Integer last_battle_time;
+    private Integer lastBattleTime;
     @Column(name = "created_at", nullable = false)
-    private Integer created_at;
+    private Integer createdAt;
     @Column(name = "updated_at", nullable = false)
-    private Integer updated_at;
+    private Integer updatedAt;
     @Column(name = "logout_at", nullable = false)
-    private Integer logout_at;
+    private Integer logoutAt;
     @Column(name = "clan_id", nullable = false)
-    private Integer clan_id;
+    private Integer clanId;
     @Column(name = "client_language", nullable = false)
-    private String client_language;
+    private String clientLanguage;
     @Column(name = "is_private_account", nullable = false)
-    private Boolean is_private_account;
+    private Boolean isPrivateAccount;
     @Column(name = "global_rating", nullable = false)
-    private Integer global_rating;
+    private Integer globalRating;
     @Column(name = "statistics", nullable = false)
     private PlayerStatisticsSnapshot[] statistics;
 
-    public Integer getAccount_id() {
-        return account_id;
+    public Integer getAccountID() {
+        return accountID;
     }
 
-    public void setAccount_id(Integer account_id) {
-        this.account_id = account_id;
+    public void setAccountID(Integer accountID) {
+        this.accountID = accountID;
     }
 
     public String getNickname() {
@@ -49,68 +49,68 @@ public class PlayerDetails {
         this.nickname = nickname;
     }
 
-    public Integer getLast_battle_time() {
-        return last_battle_time;
+    public Integer getLastBattleTime() {
+        return lastBattleTime;
     }
 
-    public void setLast_battle_time(Integer last_battle_time) {
-        this.last_battle_time = last_battle_time;
+    public void setLastBattleTime(Integer lastBattleTime) {
+        this.lastBattleTime = lastBattleTime;
     }
 
-    public Integer getCreated_at() {
-        return created_at;
+    public Integer getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Integer created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Integer createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Integer getUpdated_at() {
-        return updated_at;
+    public Integer getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(Integer updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(Integer updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public Integer getLogout_at() {
-        return logout_at;
+    public Integer getLogoutAt() {
+        return logoutAt;
     }
 
-    public void setLogout_at(Integer logout_at) {
-        this.logout_at = logout_at;
+    public void setLogoutAt(Integer logoutAt) {
+        this.logoutAt = logoutAt;
     }
 
-    public Integer getClan_id() {
-        return clan_id;
+    public Integer getClanId() {
+        return clanId;
     }
 
-    public void setClan_id(Integer clan_id) {
-        this.clan_id = clan_id;
+    public void setClanId(Integer clanId) {
+        this.clanId = clanId;
     }
 
-    public String getClient_language() {
-        return client_language;
+    public String getClientLanguage() {
+        return clientLanguage;
     }
 
-    public void setClient_language(String client_language) {
-        this.client_language = client_language;
+    public void setClientLanguage(String clientLanguage) {
+        this.clientLanguage = clientLanguage;
     }
 
-    public Boolean getIs_private_account() {
-        return is_private_account;
+    public Boolean getPrivateAccount() {
+        return isPrivateAccount;
     }
 
-    public void setIs_private_account(Boolean is_private_account) {
-        this.is_private_account = is_private_account;
+    public void setPrivateAccount(Boolean privateAccount) {
+        isPrivateAccount = privateAccount;
     }
 
-    public Integer getGlobal_rating() {
-        return global_rating;
+    public Integer getGlobalRating() {
+        return globalRating;
     }
 
-    public void setGlobal_rating(Integer global_rating) {
-        this.global_rating = global_rating;
+    public void setGlobalRating(Integer globalRating) {
+        this.globalRating = globalRating;
     }
 
     public PlayerStatisticsSnapshot[] getStatistics() {

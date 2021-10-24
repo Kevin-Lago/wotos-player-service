@@ -1,28 +1,43 @@
 package com.wotos.wotosplayerservice.jsonao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class StatisticsJSONAO {
 
     private Integer spotted;
-    private Integer battles_on_stunning_vehicles;
-    private Integer max_xp;
+    @JsonProperty("battles_on_stunning_vehicles")
+    private Integer battlesOnStunningVehicles;
+    @JsonProperty("max_xp")
+    private Integer maxXP;
     private Integer xp;
-    private Integer survived_battles;
-    private Integer dropped_capture_points;
-    private Integer hits_percents;
+    @JsonProperty("survived_battles")
+    private Integer survivedBattles;
+    @JsonProperty("dropped_capture_points")
+    private Integer droppedCapturePoints;
+    @JsonProperty("hits_percents")
+    private Integer hitsPercents;
     private Integer draws;
     private Integer battles;
-    private Integer damage_recieved;
+    @JsonProperty("damage_received")
+    private Integer damageReceived;
     private Integer frags;
-    private Integer stun_number;
-    private Integer capture_points;
-    private Integer stun_assisted_damage;
-    private Integer max_damage;
+    @JsonProperty("stun_number")
+    private Integer stunNumber;
+    @JsonProperty("capture_points")
+    private Integer capturePoints;
+    @JsonProperty("stun_assisted_damage")
+    private Integer stunAssistedDamage;
+    @JsonProperty("max_damage")
+    private Integer maxDamage;
     private Integer hits;
-    private Integer battle_avg_xp;
+    @JsonProperty("battle_avg_xp")
+    private Integer battleAverageXP;
     private Integer wins;
     private Integer losses;
-    private Integer damage_dealt;
-    private Integer max_frags;
+    @JsonProperty("damage_dealt")
+    private Integer damageDealt;
+    @JsonProperty("max_frags")
+    private Integer maxFrags;
     private Integer shots;
 
     public Integer getSpotted() {
@@ -33,20 +48,20 @@ public class StatisticsJSONAO {
         this.spotted = spotted;
     }
 
-    public Integer getBattles_on_stunning_vehicles() {
-        return battles_on_stunning_vehicles;
+    public Integer getBattlesOnStunningVehicles() {
+        return battlesOnStunningVehicles;
     }
 
-    public void setBattles_on_stunning_vehicles(Integer battles_on_stunning_vehicles) {
-        this.battles_on_stunning_vehicles = battles_on_stunning_vehicles;
+    public void setBattlesOnStunningVehicles(Integer battlesOnStunningVehicles) {
+        this.battlesOnStunningVehicles = battlesOnStunningVehicles;
     }
 
-    public Integer getMax_xp() {
-        return max_xp;
+    public Integer getMaxXP() {
+        return maxXP;
     }
 
-    public void setMax_xp(Integer max_xp) {
-        this.max_xp = max_xp;
+    public void setMaxXP(Integer maxXP) {
+        this.maxXP = maxXP;
     }
 
     public Integer getXp() {
@@ -57,28 +72,28 @@ public class StatisticsJSONAO {
         this.xp = xp;
     }
 
-    public Integer getSurvived_battles() {
-        return survived_battles;
+    public Integer getSurvivedBattles() {
+        return survivedBattles;
     }
 
-    public void setSurvived_battles(Integer survived_battles) {
-        this.survived_battles = survived_battles;
+    public void setSurvivedBattles(Integer survivedBattles) {
+        this.survivedBattles = survivedBattles;
     }
 
-    public Integer getDropped_capture_points() {
-        return dropped_capture_points;
+    public Integer getDroppedCapturePoints() {
+        return droppedCapturePoints;
     }
 
-    public void setDropped_capture_points(Integer dropped_capture_points) {
-        this.dropped_capture_points = dropped_capture_points;
+    public void setDroppedCapturePoints(Integer droppedCapturePoints) {
+        this.droppedCapturePoints = droppedCapturePoints;
     }
 
-    public Integer getHits_percents() {
-        return hits_percents;
+    public Integer getHitsPercents() {
+        return hitsPercents;
     }
 
-    public void setHits_percents(Integer hits_percents) {
-        this.hits_percents = hits_percents;
+    public void setHitsPercents(Integer hitsPercents) {
+        this.hitsPercents = hitsPercents;
     }
 
     public Integer getDraws() {
@@ -97,12 +112,12 @@ public class StatisticsJSONAO {
         this.battles = battles;
     }
 
-    public Integer getDamage_recieved() {
-        return damage_recieved;
+    public Integer getDamageReceived() {
+        return damageReceived;
     }
 
-    public void setDamage_recieved(Integer damage_recieved) {
-        this.damage_recieved = damage_recieved;
+    public void setDamageReceived(Integer damageReceived) {
+        this.damageReceived = damageReceived;
     }
 
     public Integer getFrags() {
@@ -113,36 +128,36 @@ public class StatisticsJSONAO {
         this.frags = frags;
     }
 
-    public Integer getStun_number() {
-        return stun_number;
+    public Integer getStunNumber() {
+        return stunNumber;
     }
 
-    public void setStun_number(Integer stun_number) {
-        this.stun_number = stun_number;
+    public void setStunNumber(Integer stunNumber) {
+        this.stunNumber = stunNumber;
     }
 
-    public Integer getCapture_points() {
-        return capture_points;
+    public Integer getCapturePoints() {
+        return capturePoints;
     }
 
-    public void setCapture_points(Integer capture_points) {
-        this.capture_points = capture_points;
+    public void setCapturePoints(Integer capturePoints) {
+        this.capturePoints = capturePoints;
     }
 
-    public Integer getStun_assisted_damage() {
-        return stun_assisted_damage;
+    public Integer getStunAssistedDamage() {
+        return stunAssistedDamage;
     }
 
-    public void setStun_assisted_damage(Integer stun_assisted_damage) {
-        this.stun_assisted_damage = stun_assisted_damage;
+    public void setStunAssistedDamage(Integer stunAssistedDamage) {
+        this.stunAssistedDamage = stunAssistedDamage;
     }
 
-    public Integer getMax_damage() {
-        return max_damage;
+    public Integer getMaxDamage() {
+        return maxDamage;
     }
 
-    public void setMax_damage(Integer max_damage) {
-        this.max_damage = max_damage;
+    public void setMaxDamage(Integer maxDamage) {
+        this.maxDamage = maxDamage;
     }
 
     public Integer getHits() {
@@ -153,12 +168,12 @@ public class StatisticsJSONAO {
         this.hits = hits;
     }
 
-    public Integer getBattle_avg_xp() {
-        return battle_avg_xp;
+    public Integer getBattleAverageXP() {
+        return battleAverageXP;
     }
 
-    public void setBattle_avg_xp(Integer battle_avg_xp) {
-        this.battle_avg_xp = battle_avg_xp;
+    public void setBattleAverageXP(Integer battleAverageXP) {
+        this.battleAverageXP = battleAverageXP;
     }
 
     public Integer getWins() {
@@ -177,20 +192,20 @@ public class StatisticsJSONAO {
         this.losses = losses;
     }
 
-    public Integer getDamage_dealt() {
-        return damage_dealt;
+    public Integer getDamageDealt() {
+        return damageDealt;
     }
 
-    public void setDamage_dealt(Integer damage_dealt) {
-        this.damage_dealt = damage_dealt;
+    public void setDamageDealt(Integer damageDealt) {
+        this.damageDealt = damageDealt;
     }
 
-    public Integer getMax_frags() {
-        return max_frags;
+    public Integer getMaxFrags() {
+        return maxFrags;
     }
 
-    public void setMax_frags(Integer max_frags) {
-        this.max_frags = max_frags;
+    public void setMaxFrags(Integer maxFrags) {
+        this.maxFrags = maxFrags;
     }
 
     public Integer getShots() {

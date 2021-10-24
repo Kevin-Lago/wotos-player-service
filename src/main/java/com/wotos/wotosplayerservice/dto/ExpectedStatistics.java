@@ -7,75 +7,75 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(schema = "expected_statistics")
+@Entity(name = "expected_statistics")
+@Table(name = "expected_statistics")
 public class ExpectedStatistics {
 
     @Id
     @Column(name = "tank_id", nullable = false, unique = true)
     @JsonProperty("IDNum")
-    private Integer tank_id;
+    private Integer tankID;
     @Column(name = "expected_defense", nullable = false)
     @JsonProperty("expDef")
-    private Float expected_defense;
+    private Float expectedDefense;
     @Column(name = "expected_frag", nullable = false)
     @JsonProperty("expFrag")
-    private Float expected_frag;
+    private Float expectedFrag;
     @Column(name = "expected_spot", nullable = false)
     @JsonProperty("expSpot")
-    private Float expected_spot;
+    private Float expectedSpot;
     @Column(name = "expected_damage", nullable = false)
     @JsonProperty("expDamage")
-    private Float expected_damage;
+    private Float expectedDamage;
     @Column(name = "expected_win_rate", nullable = false)
     @JsonProperty("expWinRate")
-    private Float expected_win_rate;
+    private Float expectedWinRate;
 
-    public Integer getTank_id() {
-        return tank_id;
+    public Integer getTankID() {
+        return tankID;
     }
 
-    public void setTank_id(Integer tank_id) {
-        this.tank_id = tank_id;
+    public void setTankID(Integer tankID) {
+        this.tankID = tankID;
     }
 
-    public Float getExpected_defense() {
-        return expected_defense;
+    public Float getExpectedDefense() {
+        return expectedDefense;
     }
 
-    public void setExpected_defense(Float expected_defense) {
-        this.expected_defense = expected_defense;
+    public void setExpectedDefense(Float expectedDefense) {
+        this.expectedDefense = expectedDefense;
     }
 
-    public Float getExpected_frag() {
-        return expected_frag;
+    public Float getExpectedFrag() {
+        return expectedFrag;
     }
 
-    public void setExpected_frag(Float expected_frag) {
-        this.expected_frag = expected_frag;
+    public void setExpectedFrag(Float expectedFrag) {
+        this.expectedFrag = expectedFrag;
     }
 
-    public Float getExpected_spot() {
-        return expected_spot;
+    public Float getExpectedSpot() {
+        return expectedSpot;
     }
 
-    public void setExpected_spot(Float expected_spot) {
-        this.expected_spot = expected_spot;
+    public void setExpectedSpot(Float expectedSpot) {
+        this.expectedSpot = expectedSpot;
     }
 
-    public Float getExpected_damage() {
-        return expected_damage;
+    public Float getExpectedDamage() {
+        return expectedDamage;
     }
 
-    public void setExpected_damage(Float expected_damage) {
-        this.expected_damage = expected_damage;
+    public void setExpectedDamage(Float expectedDamage) {
+        this.expectedDamage = expectedDamage;
     }
 
-    public Float getExpected_win_rate() {
-        return expected_win_rate;
+    public Float getExpectedWinRate() {
+        return expectedWinRate;
     }
 
-    public void setExpected_win_rate(Float expected_win_rate) {
-        this.expected_win_rate = expected_win_rate;
+    public void setExpectedWinRate(Float expectedWinRate) {
+        this.expectedWinRate = expectedWinRate;
     }
 }

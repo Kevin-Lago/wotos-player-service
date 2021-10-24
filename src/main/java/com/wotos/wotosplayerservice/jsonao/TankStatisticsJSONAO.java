@@ -1,30 +1,38 @@
 package com.wotos.wotosplayerservice.jsonao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class TankStatisticsJSONAO {
 
-    private Integer tank_id;
-    private Boolean in_garage;
+    @JsonProperty("tank_id")
+    private Integer tankID;
+    @JsonProperty("in_garage")
+    private Boolean inGarage;
     private Integer frags;
-    private Integer mark_of_mastery;
-    private Integer max_frags;
-    private Integer max_xp;
-    private Integer account_id;
+    @JsonProperty("mark_of_mastery")
+    private Integer marksOfMastery;
+    @JsonProperty("max_frags")
+    private Integer maxFrags;
+    @JsonProperty("max_xp")
+    private Integer maxXP;
+    @JsonProperty("account_id")
+    private Integer accountID;
     private StatisticsByModeJSONAO statistics;
 
-    public Integer getTank_id() {
-        return tank_id;
+    public Integer getTankID() {
+        return tankID;
     }
 
-    public void setTank_id(Integer tank_id) {
-        this.tank_id = tank_id;
+    public void setTankID(Integer tankID) {
+        this.tankID = tankID;
     }
 
-    public Boolean getIn_garage() {
-        return in_garage;
+    public Boolean getInGarage() {
+        return inGarage;
     }
 
-    public void setIn_garage(Boolean in_garage) {
-        this.in_garage = in_garage;
+    public void setInGarage(Boolean inGarage) {
+        this.inGarage = inGarage;
     }
 
     public Integer getFrags() {
@@ -35,36 +43,36 @@ public class TankStatisticsJSONAO {
         this.frags = frags;
     }
 
-    public Integer getMark_of_mastery() {
-        return mark_of_mastery;
+    public Integer getMarksOfMastery() {
+        return marksOfMastery;
     }
 
-    public void setMark_of_mastery(Integer mark_of_mastery) {
-        this.mark_of_mastery = mark_of_mastery;
+    public void setMarksOfMastery(Integer marksOfMastery) {
+        this.marksOfMastery = marksOfMastery;
     }
 
-    public Integer getMax_frags() {
-        return max_frags;
+    public Integer getMaxFrags() {
+        return maxFrags;
     }
 
-    public void setMax_frags(Integer max_frags) {
-        this.max_frags = max_frags;
+    public void setMaxFrags(Integer maxFrags) {
+        this.maxFrags = maxFrags;
     }
 
-    public Integer getMax_xp() {
-        return max_xp;
+    public Integer getMaxXP() {
+        return maxXP;
     }
 
-    public void setMax_xp(Integer max_xp) {
-        this.max_xp = max_xp;
+    public void setMaxXP(Integer maxXP) {
+        this.maxXP = maxXP;
     }
 
-    public Integer getAccount_id() {
-        return account_id;
+    public Integer getAccountID() {
+        return accountID;
     }
 
-    public void setAccount_id(Integer account_id) {
-        this.account_id = account_id;
+    public void setAccountID(Integer accountID) {
+        this.accountID = accountID;
     }
 
     public StatisticsByModeJSONAO getStatistics() {

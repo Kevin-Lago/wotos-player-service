@@ -7,8 +7,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dto.PlayerStatisticsSnapshot;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
-import com.wotos.wotosplayerservice.repo.PlayerStatisticsRepository;
-import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsRepository;
+import com.wotos.wotosplayerservice.repo.PlayerStatisticsSnapshotRepository;
+import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsSnapshotRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,8 +20,8 @@ import java.util.List;
 @Service
 public class StatisticsService {
 
-    private final PlayerStatisticsRepository playerStatisticsRepository;
-    private final PlayerTankStatisticsRepository playerTankStatisticsRepository;
+    private final PlayerStatisticsSnapshotRepository playerStatisticsRepository;
+    private final PlayerTankStatisticsSnapshotRepository playerTankStatisticsRepository;
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
     private final RestTemplate restTemplate;
     private final ObjectMapper mapper;
@@ -30,8 +30,8 @@ public class StatisticsService {
     private String EXPECTED_STATISTICS_URI;
 
     public StatisticsService(
-            PlayerStatisticsRepository playerStatisticsRepository,
-            PlayerTankStatisticsRepository playerTankStatisticsRepository,
+            PlayerStatisticsSnapshotRepository playerStatisticsRepository,
+            PlayerTankStatisticsSnapshotRepository playerTankStatisticsRepository,
             ExpectedStatisticsRepository expectedStatisticsRepository
     ) {
         this.playerStatisticsRepository = playerStatisticsRepository;
@@ -59,7 +59,7 @@ public class StatisticsService {
     }
 
     public List<ExpectedStatistics> fetchExpectedStatistics() {
-
+//        ToDo: Just return expected statistics
         String result = this.restTemplate.getForObject(EXPECTED_STATISTICS_URI, String.class);
         List<ExpectedStatistics> expectedStatistics = new ArrayList<>();
 
@@ -70,6 +70,10 @@ public class StatisticsService {
                 try {
                     ExpectedStatistics expectedStatistic = mapper.treeToValue(value, ExpectedStatistics.class);
                     expectedStatistics.add(expectedStatistic);
+
+                    if (expectedStatisticsRepository.existsById(expectedStatistic.getTank_id())) {
+                        System.out.println("exists");
+                    }
                 } catch (JsonProcessingException e) {
                     System.out.println("Error fetching Expected Statistics values: " + e.getMessage());
                 }

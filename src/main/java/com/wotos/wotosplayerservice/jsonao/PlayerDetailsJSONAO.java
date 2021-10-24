@@ -4,81 +4,89 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class PlayerDetailsJSONAO {
 
-    private String client_language;
-    private long last_battle_time;
-    private long account_id;
-    private long created_at;
-    private long updated_at;
+    @JsonProperty("client_language")
+    private String clientLanguage;
+    @JsonProperty("last_battle_time")
+    private long lastBattleTime;
+    @JsonProperty("account_id")
+    private long accountID;
+    @JsonProperty("created_at")
+    private long createdAt;
+    @JsonProperty("updated_at")
+    private long updatedAt;
     @JsonProperty("private")
-    private boolean is_private_account;
-    private long global_rating;
-    private long clan_id;
+    private boolean isPrivateAccount;
+    @JsonProperty("global_rating")
+    private long globalRating;
+    @JsonProperty("clan_id")
+    private long clanID;
     private String nickname;
-    private long logout_at;
+    @JsonProperty("logout_at")
+    private long logoutAt;
     private StatisticsByModeJSONAO statistics;
 
-    public String getClient_language() {
-        return client_language;
+    public String getClientLanguage() {
+        return clientLanguage;
     }
 
-    public void setClient_language(String client_language) {
-        this.client_language = client_language;
+    public void setClientLanguage(String clientLanguage) {
+        this.clientLanguage = clientLanguage;
     }
 
-    public long getLast_battle_time() {
-        return last_battle_time;
+    public long getLastBattleTime() {
+        return lastBattleTime;
     }
 
-    public void setLast_battle_time(long last_battle_time) {
-        this.last_battle_time = last_battle_time;
+    public void setLastBattleTime(long lastBattleTime) {
+        this.lastBattleTime = lastBattleTime;
     }
 
-    public long getAccount_id() {
-        return account_id;
+    public long getAccountID() {
+        return accountID;
     }
 
-    public void setAccount_id(long account_id) {
-        this.account_id = account_id;
+    public void setAccountID(long accountID) {
+        this.accountID = accountID;
     }
 
-    public long getCreated_at() {
-        return created_at;
+    public long getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(long created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public long getUpdated_at() {
-        return updated_at;
+    public long getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(long updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public boolean isIs_private_account() {
-        return is_private_account;
+    public boolean isPrivateAccount() {
+        return isPrivateAccount;
     }
 
-    public void setIs_private_account(boolean is_private_account) {
-        this.is_private_account = is_private_account;
+    public void setPrivateAccount(boolean privateAccount) {
+        isPrivateAccount = privateAccount;
     }
 
-    public long getGlobal_rating() {
-        return global_rating;
+    public long getGlobalRating() {
+        return globalRating;
     }
 
-    public void setGlobal_rating(long global_rating) {
-        this.global_rating = global_rating;
+    public void setGlobalRating(long globalRating) {
+        this.globalRating = globalRating;
     }
 
-    public long getClan_id() {
-        return clan_id;
+    public long getClanID() {
+        return clanID;
     }
 
-    public void setClan_id(long clan_id) {
-        this.clan_id = clan_id;
+    public void setClanID(long clanID) {
+        this.clanID = clanID;
     }
 
     public String getNickname() {
@@ -89,12 +97,12 @@ public class PlayerDetailsJSONAO {
         this.nickname = nickname;
     }
 
-    public long getLogout_at() {
-        return logout_at;
+    public long getLogoutAt() {
+        return logoutAt;
     }
 
-    public void setLogout_at(long logout_at) {
-        this.logout_at = logout_at;
+    public void setLogoutAt(long logoutAt) {
+        this.logoutAt = logoutAt;
     }
 
     public StatisticsByModeJSONAO getStatistics() {

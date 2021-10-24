@@ -1,9 +1,12 @@
 package com.wotos.wotosplayerservice.jsonao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PlayerJSONAO {
 
     private String nickname;
-    private String account_id;
+    @JsonProperty("account_id")
+    private String accountID;
 
     public String getNickname() {
         return nickname;
@@ -13,11 +16,11 @@ public class PlayerJSONAO {
         this.nickname = nickname;
     }
 
-    public String getAccount_id() {
-        return account_id;
+    public String getAccountID() {
+        return accountID;
     }
 
-    public void setAccount_id(String account_id) {
-        this.account_id = account_id;
+    public void setAccountID(String accountID) {
+        this.accountID = accountID;
     }
 }

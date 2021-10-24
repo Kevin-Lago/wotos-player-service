@@ -1,16 +1,22 @@
 package com.wotos.wotosplayerservice.jsonao;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class StatisticsByModeJSONAO {
 
     private StatisticsJSONAO clan;
     private StatisticsJSONAO all;
-    private StatisticsJSONAO regular_team;
+    @JsonProperty("regular_team")
+    private StatisticsJSONAO regularTeam;
     private StatisticsJSONAO company;
-    private StatisticsJSONAO stronghold_skirmish;
-    private StatisticsJSONAO stronghold_defense;
+    @JsonProperty("stronghold_skirmish")
+    private StatisticsJSONAO strongholdSkirmish;
+    @JsonProperty("stronghold_defense")
+    private StatisticsJSONAO strongholdDefense;
     private StatisticsJSONAO historical;
     private StatisticsJSONAO team;
-    private Integer trees_cut;
+    @JsonProperty("trees_cut")
+    private Integer treesCut;
     private Integer frags;
 
     public StatisticsJSONAO getClan() {
@@ -29,20 +35,12 @@ public class StatisticsByModeJSONAO {
         this.all = all;
     }
 
-    public StatisticsJSONAO getRegular_team() {
-        return regular_team;
+    public StatisticsJSONAO getRegularTeam() {
+        return regularTeam;
     }
 
-    public void setRegular_team(StatisticsJSONAO regular_team) {
-        this.regular_team = regular_team;
-    }
-
-    public Integer getTrees_cut() {
-        return trees_cut;
-    }
-
-    public void setTrees_cut(Integer trees_cut) {
-        this.trees_cut = trees_cut;
+    public void setRegularTeam(StatisticsJSONAO regularTeam) {
+        this.regularTeam = regularTeam;
     }
 
     public StatisticsJSONAO getCompany() {
@@ -53,20 +51,20 @@ public class StatisticsByModeJSONAO {
         this.company = company;
     }
 
-    public StatisticsJSONAO getStronghold_skirmish() {
-        return stronghold_skirmish;
+    public StatisticsJSONAO getStrongholdSkirmish() {
+        return strongholdSkirmish;
     }
 
-    public void setStronghold_skirmish(StatisticsJSONAO stronghold_skirmish) {
-        this.stronghold_skirmish = stronghold_skirmish;
+    public void setStrongholdSkirmish(StatisticsJSONAO strongholdSkirmish) {
+        this.strongholdSkirmish = strongholdSkirmish;
     }
 
-    public StatisticsJSONAO getStronghold_defense() {
-        return stronghold_defense;
+    public StatisticsJSONAO getStrongholdDefense() {
+        return strongholdDefense;
     }
 
-    public void setStronghold_defense(StatisticsJSONAO stronghold_defense) {
-        this.stronghold_defense = stronghold_defense;
+    public void setStrongholdDefense(StatisticsJSONAO strongholdDefense) {
+        this.strongholdDefense = strongholdDefense;
     }
 
     public StatisticsJSONAO getHistorical() {
@@ -83,6 +81,14 @@ public class StatisticsByModeJSONAO {
 
     public void setTeam(StatisticsJSONAO team) {
         this.team = team;
+    }
+
+    public Integer getTreesCut() {
+        return treesCut;
+    }
+
+    public void setTreesCut(Integer treesCut) {
+        this.treesCut = treesCut;
     }
 
     public Integer getFrags() {

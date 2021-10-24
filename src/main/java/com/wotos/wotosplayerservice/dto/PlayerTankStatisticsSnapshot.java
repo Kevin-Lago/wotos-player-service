@@ -1,90 +1,100 @@
 package com.wotos.wotosplayerservice.dto;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
+@Entity(name = "player_tank_statistics_snapshot")
+@Table(name = "player_tank_statistics_snapshots")
 public class PlayerTankStatisticsSnapshot {
 
     @Id
     @GeneratedValue
-    private Integer player_tank_statistics_snapshot_id;
+    private Integer playerTankStatisticsSnapshotID;
     @Column(name = "player_id", nullable = false)
-    private Integer player_id;
+    private Integer playerID;
     @Column(name = "tank_id", nullable = false)
-    private Integer tank_id;
+    private Integer tankID;
     @Column(name = "total_battles", nullable = false)
-    private Integer total_battles;
+    private Integer totalBattles;
     @Column(name = "average_wn8", nullable = false)
-    private Float average_wn8;
+    private Float averageWn8;
     @Column(name = "hit_ratio", nullable = false)
-    private Float hit_ratio;
+    private Float hitRatio;
     @Column(name = "average_experience", nullable = false)
-    private Float average_experience;
+    private Float averageExperience;
     @Column(name = "personal_rating", nullable = false)
-    private Integer personal_rating;
+    private Integer personalRating;
+    @Column(name = "average_kill_ratio", nullable = false)
+    private Float averageKillRatio;
 
-    public Integer getPlayer_tank_statistics_snapshot_id() {
-        return player_tank_statistics_snapshot_id;
+    public Integer getPlayerTankStatisticsSnapshotID() {
+        return playerTankStatisticsSnapshotID;
     }
 
-    public void setPlayer_tank_statistics_snapshot_id(Integer player_tank_statistics_snapshot_id) {
-        this.player_tank_statistics_snapshot_id = player_tank_statistics_snapshot_id;
+    public void setPlayerTankStatisticsSnapshotID(Integer playerTankStatisticsSnapshotID) {
+        this.playerTankStatisticsSnapshotID = playerTankStatisticsSnapshotID;
     }
 
-    public Integer getPlayer_id() {
-        return player_id;
+    public Integer getPlayerID() {
+        return playerID;
     }
 
-    public void setPlayer_id(Integer player_id) {
-        this.player_id = player_id;
+    public void setPlayerID(Integer playerID) {
+        this.playerID = playerID;
     }
 
-    public Integer getTank_id() {
-        return tank_id;
+    public Integer getTankID() {
+        return tankID;
     }
 
-    public void setTank_id(Integer tank_id) {
-        this.tank_id = tank_id;
+    public void setTankID(Integer tankID) {
+        this.tankID = tankID;
     }
 
-    public Integer getTotal_battles() {
-        return total_battles;
+    public Integer getTotalBattles() {
+        return totalBattles;
     }
 
-    public void setTotal_battles(Integer total_battles) {
-        this.total_battles = total_battles;
+    public void setTotalBattles(Integer totalBattles) {
+        this.totalBattles = totalBattles;
     }
 
-    public Float getAverage_wn8() {
-        return average_wn8;
+    public Float getAverageWn8() {
+        return averageWn8;
     }
 
-    public void setAverage_wn8(Float average_wn8) {
-        this.average_wn8 = average_wn8;
+    public void setAverageWn8(Float averageWn8) {
+        this.averageWn8 = averageWn8;
     }
 
-    public Float getHit_ratio() {
-        return hit_ratio;
+    public Float getHitRatio() {
+        return hitRatio;
     }
 
-    public void setHit_ratio(Float hit_ratio) {
-        this.hit_ratio = hit_ratio;
+    public void setHitRatio(Float hitRatio) {
+        this.hitRatio = hitRatio;
     }
 
-    public Float getAverage_experience() {
-        return average_experience;
+    public Float getAverageExperience() {
+        return averageExperience;
     }
 
-    public void setAverage_experience(Float average_experience) {
-        this.average_experience = average_experience;
+    public void setAverageExperience(Float averageExperience) {
+        this.averageExperience = averageExperience;
     }
 
-    public Integer getPersonal_rating() {
-        return personal_rating;
+    public Integer getPersonalRating() {
+        return personalRating;
     }
 
-    public void setPersonal_rating(Integer personal_rating) {
-        this.personal_rating = personal_rating;
+    public void setPersonalRating(Integer personalRating) {
+        this.personalRating = personalRating;
+    }
+
+    public Float getAverageKillRatio() {
+        return averageKillRatio;
+    }
+
+    public void setAverageKillRatio(Float averageKillRatio) {
+        this.averageKillRatio = averageKillRatio;
     }
 }

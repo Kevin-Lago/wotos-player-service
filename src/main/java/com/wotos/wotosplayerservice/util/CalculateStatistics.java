@@ -1,9 +1,10 @@
 package com.wotos.wotosplayerservice.util;
 
+import com.wotos.wotosplayerservice.dto.PlayerTankStatisticsSnapshot;
 import com.wotos.wotosplayerservice.jsonao.TankStatisticsJSONAO;
 import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
-import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsRepository;
+import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsSnapshotRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -12,17 +13,17 @@ import java.util.Optional;
 public class CalculateStatistics {
 
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
-    private final PlayerTankStatisticsRepository tankStatisticsRepository;
+    private final PlayerTankStatisticsSnapshotRepository playerTankStatisticsRepository;
 
     public CalculateStatistics(
             ExpectedStatisticsRepository expectedStatisticsRepository,
-            PlayerTankStatisticsRepository tankStatisticsRepository
+            PlayerTankStatisticsSnapshotRepository playerTankStatisticsRepository
     ) {
         this.expectedStatisticsRepository = expectedStatisticsRepository;
-        this.tankStatisticsRepository = tankStatisticsRepository;
+        this.playerTankStatisticsRepository = playerTankStatisticsRepository;
     }
 
-    public PlayerTankStatistics calculateTankStatistics(int playerID, TankStatisticsJSONAO tankStatisticsJSONAO) {
+    public PlayerTankStatisticsSnapshot calculateTankStatistics(int playerID, TankStatisticsJSONAO tankStatisticsJSONAO) {
         ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(tankStatisticsJSONAO.getTank_id()).get();
 
         float wins = tankStatisticsJSONAO.getStatistics().getAll().getWins();
@@ -59,7 +60,7 @@ public class CalculateStatistics {
         float wn8 = (float) ((980 * DAMAGEc) + (210 * DAMAGEc * FRAGc) + (155 * FRAGc * SPOTc) + (75 * DEFENSEc * FRAGc) + (145 * Math.min(1.8, WINc)));
         int tankID = tankStatisticsJSONAO.getTank_id();
 
-        PlayerTankStatistics tankStatistics = buildTankStatistics(
+        PlayerTankStatisticsSnapshot tankStatistics = buildTankStatistics(
                 playerID, tankID, wn8, (int) battles, killRatio, avgXP
         );
 
@@ -68,24 +69,24 @@ public class CalculateStatistics {
         return tankStatistics;
     }
 
-    private PlayerTankStatistics buildTankStatistics(Integer playerID, Integer tankID, Float wn8, Integer battles, Float killRatio, Float averageXP) {
-        PlayerTankStatistics tankStatistics = new PlayerTankStatistics();
+    private PlayerTankStatisticsSnapshot buildTankStatistics(Integer playerID, Integer tankID, Float wn8, Integer battles, Float killRatio, Float averageXP) {
+        PlayerTankStatisticsSnapshot tankStatistics = new PlayerTankStatisticsSnapshot();
         tankStatistics.setPlayer_id(playerID);
         tankStatistics.setTank_id(tankID);
-        tankStatistics.setWn8(wn8);
-        tankStatistics.setBattles(battles);
-        tankStatistics.setKill_ratio(killRatio);
-        tankStatistics.setAverage_xp(averageXP);
+        tankStatistics.setAverage_wn8(wn8);
+        tankStatistics.setTotal_battles(battles);
+        tankStatistics.setAverage_kill_ratio(killRatio);
+        tankStatistics.setAverage_experience(averageXP);
 
         return tankStatistics;
     }
 
-    private void saveTankStatistics(Integer playerID, Integer tankID, PlayerTankStatistics tankStatistics) {
-        Optional<Integer> tankInDB = tankStatisticsRepository.findMaxBattlesByPlayerAndTankID(playerID, tankID);
+    private void saveTankStatistics(Integer playerID, Integer tankID, PlayerTankStatisticsSnapshot tankStatistics) {
+        Optional<Integer> tankInDB = playerTankStatisticsRepository.findMaxBattlesByPlayerAndTankID(playerID, tankID);
 
         // Todo: move 100 battle snapshot check to before calculations
-        if (!tankInDB.isPresent() || tankStatistics.getBattles() - tankInDB.get() >= 100) {
-            tankStatisticsRepository.save(tankStatistics);
+        if (!tankInDB.isPresent() || tankStatistics.getTotal_battles() - tankInDB.get() >= 100) {
+            playerTankStatisticsRepository.save(tankStatistics);
         }
     }
 
