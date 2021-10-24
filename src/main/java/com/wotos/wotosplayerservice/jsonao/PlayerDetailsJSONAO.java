@@ -1,32 +1,21 @@
-package com.wotos.wotosplayerservice.model;
+package com.wotos.wotosplayerservice.jsonao;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
-@Entity
-@Table(schema = "players")
-public class PlayerDetails {
+public class PlayerDetailsJSONAO {
 
     private String client_language;
     private long last_battle_time;
-    @Id
     private long account_id;
     private long created_at;
     private long updated_at;
     @JsonProperty("private")
-    private boolean isPrivate;
+    private boolean is_private_account;
     private long global_rating;
     private long clan_id;
-    @JsonInclude
-    @Transient
-    private Statistics statistics;
     private String nickname;
     private long logout_at;
+    private StatisticsByModeJSONAO statistics;
 
     public String getClient_language() {
         return client_language;
@@ -68,12 +57,12 @@ public class PlayerDetails {
         this.updated_at = updated_at;
     }
 
-    public boolean isPrivate() {
-        return isPrivate;
+    public boolean isIs_private_account() {
+        return is_private_account;
     }
 
-    public void setPrivate(boolean aPrivate) {
-        isPrivate = aPrivate;
+    public void setIs_private_account(boolean is_private_account) {
+        this.is_private_account = is_private_account;
     }
 
     public long getGlobal_rating() {
@@ -92,14 +81,6 @@ public class PlayerDetails {
         this.clan_id = clan_id;
     }
 
-    public Statistics getStatistics() {
-        return statistics;
-    }
-
-    public void setStatistics(Statistics statistics) {
-        this.statistics = statistics;
-    }
-
     public String getNickname() {
         return nickname;
     }
@@ -114,5 +95,13 @@ public class PlayerDetails {
 
     public void setLogout_at(long logout_at) {
         this.logout_at = logout_at;
+    }
+
+    public StatisticsByModeJSONAO getStatistics() {
+        return statistics;
+    }
+
+    public void setStatistics(StatisticsByModeJSONAO statistics) {
+        this.statistics = statistics;
     }
 }

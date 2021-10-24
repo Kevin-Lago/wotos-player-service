@@ -1,6 +1,6 @@
-package com.wotos.wotosplayerservice.model;
+package com.wotos.wotosplayerservice.jsonao;
 
-public class Player {
+public class PlayerJSONAO {
 
     private String nickname;
     private String account_id;

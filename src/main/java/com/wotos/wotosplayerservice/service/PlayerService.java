@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wotos.wotosplayerservice.model.Player;
-import com.wotos.wotosplayerservice.model.PlayerDetails;
+import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
+import com.wotos.wotosplayerservice.dto.PlayerDetails;
+import com.wotos.wotosplayerservice.jsonao.PlayerJSONAO;
+import com.wotos.wotosplayerservice.jsonao.PlayerDetailsJSONAO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,10 +42,17 @@ public class PlayerService {
                 DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
         );
         httpHeaders.add("Language", LANGUAGE);
-        httpHeaders.add("Request Method", "")
+        httpHeaders.add("Request Method", "");
     }
 
-    public ResponseEntity<List<Player>> getListOfPlayersByNickname(String nickname) {
+    public PlayerDetails getPlayerDetails(Integer playerID, String nickname) {
+        PlayerDetails playerDetails = new PlayerDetails();
+//        Try to get from repo
+//        if not in repo generate playerdetails
+        return null;
+    }
+
+    private List<PlayerJSONAO> fetchListOfPlayersByNickname(String nickname) {
 
         String uri = WOT_API_ACCOUNT_LIST + APP_ID_QUERY + APP_ID +
                 LANGUAGE_QUERY + LANGUAGE + PLAYER_NICKNAME_SEARCH_QUERY + nickname;
@@ -51,54 +60,51 @@ public class PlayerService {
 
         try {
             JsonNode data = mapper.readTree(result).get("data");
-            List<Player> players = new ArrayList<>();
+            List<PlayerJSONAO> PlayerJSONAOs = new ArrayList<>();
 
             data.forEach(player -> {
                 try {
-                    players.add(mapper.treeToValue(player, Player.class));
+                    PlayerJSONAOs.add(mapper.treeToValue(player, PlayerJSONAO.class));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }
             });
 
-            return new ResponseEntity<>(players, httpHeaders, HttpStatus.OK);
+            return PlayerJSONAOs;
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<>(httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
         }
 
     }
 
-    public ResponseEntity<PlayerDetails> getPlayerIDByNickname(String nickname) {
+    private PlayerJSONAO fetchPlayerIDByNickname(String nickname) {
 
         String uri = WOT_API_ACCOUNT_LIST + APP_ID_QUERY + APP_ID + PLAYER_EXACT_QUERY +
                 LANGUAGE_QUERY + LANGUAGE + PLAYER_NICKNAME_SEARCH_QUERY + nickname;
         String result = restTemplate.getForObject(uri, String.class);
 
         try {
-            String id = mapper.readTree(result).get("data").get(0).get("account_id").toString();
+            JsonNode data = mapper.readTree(result).get("data");
+            PlayerJSONAO playerJSONAO = mapper.treeToValue(data, PlayerJSONAO.class);
 
-            // check for player in db
-            PlayerDetails player = getPlayerById(id);
-
-            return new ResponseEntity<>(player, httpHeaders, HttpStatus.OK);
+            return playerJSONAO;
         } catch (IOException e) {
             System.out.println(e.getMessage());
-            return new ResponseEntity<>(httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
+            return null;
+//            return new ResponseEntity<>(httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
-    private PlayerDetails getPlayerById(String id) {
-
+    private PlayerDetailsJSONAO fetchPlayerDetailsById(String id) {
         String uri = WOT_API_ACCOUNT_INFO + APP_ID_QUERY + APP_ID +
                 LANGUAGE_QUERY + LANGUAGE + PLAYER_ID_SEARCH_QUERY + id;
         String result = restTemplate.getForObject(uri, String.class);
 
         try {
             JsonNode data = mapper.readTree(result).get("data").get(id);
-
-            PlayerDetails player = mapper.treeToValue(data, PlayerDetails.class);
+            PlayerDetailsJSONAO player = mapper.treeToValue(data, PlayerDetailsJSONAO.class);
 
             return player;
         } catch(IOException e) {

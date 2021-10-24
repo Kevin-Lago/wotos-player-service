@@ -1,9 +1,9 @@
-package com.wotos.wotosplayerservice.dao;
+package com.wotos.wotosplayerservice.repo;
 
-import com.wotos.wotosplayerservice.model.PlayerDetails;
+import com.wotos.wotosplayerservice.dto.PlayerDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface PlayerRepo extends JpaRepository<PlayerDetails, Integer> {
+public interface PlayerRepository extends JpaRepository<PlayerDetails, Integer> {
 
 //    Player addPlayer(Player player);
 //
