@@ -1,8 +1,5 @@
 package com.wotos.wotosplayerservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wotos.wotosplayerservice.jsonao.StatisticsJSONAO;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -15,16 +12,26 @@ public class PlayerDetails {
     @Id
     @Column(name = "account_id", nullable = false, unique = true)
     private Integer account_id;
+    @Column(name = "account_id", nullable = false)
     private String nickname;
+    @Column(name = "last_battle_time", nullable = false)
     private Integer last_battle_time;
+    @Column(name = "created_at", nullable = false)
     private Integer created_at;
+    @Column(name = "updated_at", nullable = false)
     private Integer updated_at;
+    @Column(name = "logout_at", nullable = false)
     private Integer logout_at;
+    @Column(name = "clan_id", nullable = false)
     private Integer clan_id;
+    @Column(name = "client_language", nullable = false)
     private String client_language;
+    @Column(name = "is_private_account", nullable = false)
     private Boolean is_private_account;
+    @Column(name = "global_rating", nullable = false)
     private Integer global_rating;
-    private StatisticsSnapshot[] statistics;
+    @Column(name = "statistics", nullable = false)
+    private PlayerStatisticsSnapshot[] statistics;
 
     public Integer getAccount_id() {
         return account_id;
@@ -106,11 +113,11 @@ public class PlayerDetails {
         this.global_rating = global_rating;
     }
 
-    public StatisticsSnapshot[] getStatistics() {
+    public PlayerStatisticsSnapshot[] getStatistics() {
         return statistics;
     }
 
-    public void setStatistics(StatisticsSnapshot[] statistics) {
+    public void setStatistics(PlayerStatisticsSnapshot[] statistics) {
         this.statistics = statistics;
     }
 }

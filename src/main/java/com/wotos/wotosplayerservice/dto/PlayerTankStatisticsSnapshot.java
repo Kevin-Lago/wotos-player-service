@@ -1,22 +1,36 @@
 package com.wotos.wotosplayerservice.dto;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity(name = "player_statistics")
-@Table(name = "player_statistics")
-public class PlayerStatistics {
+public class PlayerTankStatisticsSnapshot {
 
     @Id
-    @Column(name = "player_id", nullable = false, unique = true)
+    @GeneratedValue
+    private Integer player_tank_statistics_snapshot_id;
+    @Column(name = "player_id", nullable = false)
     private Integer player_id;
+    @Column(name = "tank_id", nullable = false)
+    private Integer tank_id;
+    @Column(name = "total_battles", nullable = false)
     private Integer total_battles;
+    @Column(name = "average_wn8", nullable = false)
     private Float average_wn8;
+    @Column(name = "hit_ratio", nullable = false)
     private Float hit_ratio;
+    @Column(name = "average_experience", nullable = false)
     private Float average_experience;
-    private int personal_rating;
+    @Column(name = "personal_rating", nullable = false)
+    private Integer personal_rating;
+
+    public Integer getPlayer_tank_statistics_snapshot_id() {
+        return player_tank_statistics_snapshot_id;
+    }
+
+    public void setPlayer_tank_statistics_snapshot_id(Integer player_tank_statistics_snapshot_id) {
+        this.player_tank_statistics_snapshot_id = player_tank_statistics_snapshot_id;
+    }
 
     public Integer getPlayer_id() {
         return player_id;
@@ -24,6 +38,14 @@ public class PlayerStatistics {
 
     public void setPlayer_id(Integer player_id) {
         this.player_id = player_id;
+    }
+
+    public Integer getTank_id() {
+        return tank_id;
+    }
+
+    public void setTank_id(Integer tank_id) {
+        this.tank_id = tank_id;
     }
 
     public Integer getTotal_battles() {
@@ -58,12 +80,11 @@ public class PlayerStatistics {
         this.average_experience = average_experience;
     }
 
-    public int getPersonal_rating() {
+    public Integer getPersonal_rating() {
         return personal_rating;
     }
 
-    public void setPersonal_rating(int personal_rating) {
+    public void setPersonal_rating(Integer personal_rating) {
         this.personal_rating = personal_rating;
     }
-
 }

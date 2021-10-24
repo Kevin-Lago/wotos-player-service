@@ -2,7 +2,6 @@ package com.wotos.wotosplayerservice.util;
 
 import com.wotos.wotosplayerservice.jsonao.TankStatisticsJSONAO;
 import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
-import com.wotos.wotosplayerservice.dto.PlayerTankStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsRepository;
 import org.springframework.stereotype.Component;

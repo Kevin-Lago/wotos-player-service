@@ -1,6 +1,5 @@
 package com.wotos.wotosplayerservice.repo;
 
-import com.wotos.wotosplayerservice.dto.PlayerTankStatistics;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

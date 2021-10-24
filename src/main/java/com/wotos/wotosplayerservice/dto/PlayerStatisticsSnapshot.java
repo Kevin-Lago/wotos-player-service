@@ -1,26 +1,34 @@
 package com.wotos.wotosplayerservice.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity(name = "statistics_snapshot")
 @Table(name = "statistics_snapshot")
-public class StatisticsSnapshot {
+public class PlayerStatisticsSnapshot {
 
+    @Id
+    @GeneratedValue
+    private Integer player_statistics_snapshot_id;
     @Column(name = "player_id", nullable = false)
     private Integer player_id;
-    @Column(name = "player_id", nullable = false)
+    @Column(name = "total_battles", nullable = false)
     private Integer total_battles;
-    @Column(name = "player_id", nullable = false)
+    @Column(name = "average_wn8", nullable = false)
     private Float average_wn8;
-    @Column(name = "player_id", nullable = false)
+    @Column(name = "hit_ratio", nullable = false)
     private Float hit_ratio;
-    @Column(name = "player_id", nullable = false)
+    @Column(name = "average_experience", nullable = false)
     private Float average_experience;
-    @Column(name = "player_id", nullable = false)
-    private int personal_rating;
+    @Column(name = "personal_rating", nullable = false)
+    private Integer personal_rating;
+
+    public Integer getPlayer_statistics_snapshot_id() {
+        return player_statistics_snapshot_id;
+    }
+
+    public void setPlayer_statistics_snapshot_id(Integer player_statistics_snapshot_id) {
+        this.player_statistics_snapshot_id = player_statistics_snapshot_id;
+    }
 
     public Integer getPlayer_id() {
         return player_id;
@@ -62,11 +70,11 @@ public class StatisticsSnapshot {
         this.average_experience = average_experience;
     }
 
-    public int getPersonal_rating() {
+    public Integer getPersonal_rating() {
         return personal_rating;
     }
 
-    public void setPersonal_rating(int personal_rating) {
+    public void setPersonal_rating(Integer personal_rating) {
         this.personal_rating = personal_rating;
     }
 }

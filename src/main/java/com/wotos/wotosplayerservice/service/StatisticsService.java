@@ -5,13 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
-import com.wotos.wotosplayerservice.dto.StatisticsSnapshot;
+import com.wotos.wotosplayerservice.dto.PlayerStatisticsSnapshot;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.PlayerStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.PlayerTankStatisticsRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -39,15 +37,21 @@ public class StatisticsService {
         this.playerStatisticsRepository = playerStatisticsRepository;
         this.playerTankStatisticsRepository = playerTankStatisticsRepository;
         this.expectedStatisticsRepository = expectedStatisticsRepository;
-        restTemplate = new RestTemplate();
-        mapper = new ObjectMapper();
+        this.restTemplate = new RestTemplate();
+        this.mapper = new ObjectMapper();
         mapper.configure(
                 DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false
         );
     }
 
-    private StatisticsSnapshot buildStatisticsSnapshot() {
-        StatisticsSnapshot statisticsSnapshot = new StatisticsSnapshot();
+    public PlayerStatisticsSnapshot getLastestPlayerStatisticsSnapshot() {
+//        PlayerStatisticsSnapshot statisticsSnapshot = playerStatisticsRepository.findOne(); // Find by largest battles value
+
+        return null;
+    }
+
+    private PlayerStatisticsSnapshot buildStatisticsSnapshot() {
+        PlayerStatisticsSnapshot statisticsSnapshot = new PlayerStatisticsSnapshot();
 
 
 
