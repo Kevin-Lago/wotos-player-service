@@ -1,48 +1,44 @@
 package com.wotos.wotosplayerservice.controller;
 
-import com.wotos.wotosplayerservice.dto.ExpectedStatistics;
-import com.wotos.wotosplayerservice.dto.PlayerStatisticsSnapshot;
-import com.wotos.wotosplayerservice.dto.PlayerTankStatisticsSnapshot;
+import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
 import com.wotos.wotosplayerservice.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/statistics")
+@RequestMapping("/stats")
 public class StatisticsController {
 
     @Autowired
     StatisticsService statisticsService;
 
-    @GetMapping("/expected")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ExpectedStatistics>> getExpectedStatistics() {
-        List<ExpectedStatistics> expectedStatistics = statisticsService.fetchExpectedStatistics();
+    @GetMapping("/tank")
+    public ResponseEntity<List<StatisticsSnapshot>> getTankStatisticsByPlayer(@PathParam("playerId") Integer playerId, @PathParam("tankId") Integer tankId) {
+        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(playerId, tankId);
 
-        return new ResponseEntity<>(expectedStatistics, HttpStatus.OK);
+        if (statisticsSnapshots.size() > 0) {
+            return new ResponseEntity<>(statisticsSnapshots, HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
-    @GetMapping("/statistics/{playerID}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PlayerStatisticsSnapshot> getLatestPlayerStatisticsByPlayerID(
-            @PathVariable("playerID") Integer playerID
-    ) {
-        PlayerStatisticsSnapshot playerStatisticsSnapshot = statisticsService.getLastestPlayerStatisticsSnapshot();
+    @GetMapping("/all")
+    public ResponseEntity<List<StatisticsSnapshot>> getAllTankStatisticsByPlayer(@PathParam("playerId") Integer playerId) {
+        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(playerId);
 
-        return new ResponseEntity<>(playerStatisticsSnapshot, HttpStatus.OK);
-    }
-
-    @GetMapping("/statistics/{playerID}/{tankID}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<PlayerTankStatisticsSnapshot> getLatestPlayersTankStatisticsByPlayerID(
-            @PathVariable("playerID") Integer playerID,
-            @PathVariable("tankID") Integer tankID
-    ) {
-        return null;
+        if (statisticsSnapshots.size() > 0) {
+            return new ResponseEntity<>(statisticsSnapshots, HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 }
