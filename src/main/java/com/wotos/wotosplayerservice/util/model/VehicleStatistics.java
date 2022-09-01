@@ -1,8 +1,8 @@
-package com.wotos.wotosplayerservice.dto;
+package com.wotos.wotosplayerservice.util.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TankStatistics {
+public class VehicleStatistics {
 
     private Integer frags;
     @JsonProperty("tank_id")
@@ -18,17 +18,17 @@ public class TankStatistics {
     @JsonProperty("account_id")
     private Integer accountId;
     @JsonProperty("regular_team")
-    private Statistics regularTeam;
+    private PlayerStatistics regularTeam;
     @JsonProperty("stronghold_skirmish")
-    private Statistics strongholdSkirmish;
+    private PlayerStatistics strongholdSkirmish;
     @JsonProperty("stronghold_defense")
-    private Statistics strongholdDefense;
-    private Statistics clan;
-    private Statistics all;
-    private Statistics company;
-    private Statistics historical;
-    private Statistics globalmap;
-    private Statistics team;
+    private PlayerStatistics strongholdDefense;
+    private PlayerStatistics clan;
+    private PlayerStatistics all;
+    private PlayerStatistics company;
+    private PlayerStatistics historical;
+    private PlayerStatistics globalmap;
+    private PlayerStatistics team;
 
     public Integer getFrags() {
         return frags;
@@ -86,75 +86,75 @@ public class TankStatistics {
         this.accountId = accountId;
     }
 
-    public Statistics getRegularTeam() {
+    public PlayerStatistics getRegularTeam() {
         return regularTeam;
     }
 
-    public void setRegularTeam(Statistics regularTeam) {
+    public void setRegularTeam(PlayerStatistics regularTeam) {
         this.regularTeam = regularTeam;
     }
 
-    public Statistics getStrongholdSkirmish() {
+    public PlayerStatistics getStrongholdSkirmish() {
         return strongholdSkirmish;
     }
 
-    public void setStrongholdSkirmish(Statistics strongholdSkirmish) {
+    public void setStrongholdSkirmish(PlayerStatistics strongholdSkirmish) {
         this.strongholdSkirmish = strongholdSkirmish;
     }
 
-    public Statistics getStrongholdDefense() {
+    public PlayerStatistics getStrongholdDefense() {
         return strongholdDefense;
     }
 
-    public void setStrongholdDefense(Statistics strongholdDefense) {
+    public void setStrongholdDefense(PlayerStatistics strongholdDefense) {
         this.strongholdDefense = strongholdDefense;
     }
 
-    public Statistics getClan() {
+    public PlayerStatistics getClan() {
         return clan;
     }
 
-    public void setClan(Statistics clan) {
+    public void setClan(PlayerStatistics clan) {
         this.clan = clan;
     }
 
-    public Statistics getAll() {
+    public PlayerStatistics getAll() {
         return all;
     }
 
-    public void setAll(Statistics all) {
+    public void setAll(PlayerStatistics all) {
         this.all = all;
     }
 
-    public Statistics getCompany() {
+    public PlayerStatistics getCompany() {
         return company;
     }
 
-    public void setCompany(Statistics company) {
+    public void setCompany(PlayerStatistics company) {
         this.company = company;
     }
 
-    public Statistics getHistorical() {
+    public PlayerStatistics getHistorical() {
         return historical;
     }
 
-    public void setHistorical(Statistics historical) {
+    public void setHistorical(PlayerStatistics historical) {
         this.historical = historical;
     }
 
-    public Statistics getGlobalmap() {
+    public PlayerStatistics getGlobalmap() {
         return globalmap;
     }
 
-    public void setGlobalmap(Statistics globalmap) {
+    public void setGlobalmap(PlayerStatistics globalmap) {
         this.globalmap = globalmap;
     }
 
-    public Statistics getTeam() {
+    public PlayerStatistics getTeam() {
         return team;
     }
 
-    public void setTeam(Statistics team) {
+    public void setTeam(PlayerStatistics team) {
         this.team = team;
     }
 }

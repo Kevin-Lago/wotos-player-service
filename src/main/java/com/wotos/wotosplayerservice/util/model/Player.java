@@ -1,4 +1,4 @@
-package com.wotos.wotosplayerservice.dto;
+package com.wotos.wotosplayerservice.util.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -6,10 +6,15 @@ public class Player {
 
     private String nickname;
     @JsonProperty("account_id")
-    private Integer accountId;
+    private String accountId;
 
     public Player(String nickname) {
         this.nickname = nickname;
+    }
+
+    public Player(String nickname, String accountId) {
+        this.nickname = nickname;
+        this.accountId = accountId;
     }
 
     public String getNickname() {
@@ -20,11 +25,11 @@ public class Player {
         this.nickname = nickname;
     }
 
-    public Integer getAccountId() {
+    public String getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
 

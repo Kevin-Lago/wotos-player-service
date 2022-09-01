@@ -1,10 +1,10 @@
-package com.wotos.wotosplayerservice.dto;
+package com.wotos.wotosplayerservice.util.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-public class PlayerPersonalData {
+public class PlayerDetails {
 
     @JsonProperty("client_language")
     private String clientLanguage;

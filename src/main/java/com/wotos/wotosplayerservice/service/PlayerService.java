@@ -4,16 +4,22 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wotos.wotosplayerservice.dto.Player;
-import com.wotos.wotosplayerservice.dto.PlayerPersonalData;
+import com.wotos.wotosplayerservice.util.model.Player;
+import com.wotos.wotosplayerservice.util.model.PlayerDetails;
+import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
+import com.wotos.wotosplayerservice.util.model.WotApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 @Service
 public class PlayerService {
@@ -30,6 +36,9 @@ public class PlayerService {
     private String WOT_API_ACCOUNT_LIST_URL;
     private final String LANGUAGE = "en";
     private final String PLAYER_EXACT_QUERY = "&type=exact";
+
+    @Autowired
+    private WotAccountsFeignClient wotPlayerApi;
 
     public PlayerService() {
         mapper.configure(
@@ -76,21 +85,13 @@ public class PlayerService {
         }
     }
 
-    public PlayerPersonalData fetchPlayerDetailsById(Integer account_id) {
-
-        String url = String.format(WOT_API_ACCOUNT_DETAILS_URL, APP_ID, LANGUAGE, account_id);
-        String result = restTemplate.getForObject(url, String.class);
-
+    public PlayerDetails fetchPlayerDetailsById(String accountId) {
         try {
-            JsonNode data = mapper.readTree(result).get("data").get(account_id);
-            PlayerPersonalData playerPersonalData = mapper.treeToValue(data, PlayerPersonalData.class);
-
-            return playerPersonalData;
-        } catch(IOException e) {
-            System.out.println(e.getMessage());
+            return wotPlayerApi.getPlayerDetails("", "en", accountId).getBody().getData().get(accountId);
+        } catch (NullPointerException e) {
+            System.out.println("Null Response Body");
             return null;
         }
-
     }
 
 }

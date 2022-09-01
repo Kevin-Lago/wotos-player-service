@@ -1,7 +1,7 @@
 package com.wotos.wotosplayerservice.controller;
 
-import com.wotos.wotosplayerservice.dto.Player;
-import com.wotos.wotosplayerservice.dto.PlayerPersonalData;
+import com.wotos.wotosplayerservice.util.model.Player;
+import com.wotos.wotosplayerservice.util.model.PlayerDetails;
 import com.wotos.wotosplayerservice.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/player")
+@RequestMapping("/api/player")
 public class PlayerController {
 
     @Autowired
@@ -24,16 +24,24 @@ public class PlayerController {
     ) {
         List<Player> players = playerService.fetchListOfPlayersByNickname(nickname);
 
-        return new ResponseEntity<>(players, HttpStatus.FOUND);
+        if (players.size() > 0) {
+            return new ResponseEntity<>(players, HttpStatus.FOUND);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @GetMapping
-    public ResponseEntity<PlayerPersonalData> getPlayerPersonalDataByPlayerId(
-            @PathParam("playerID") Integer playerID
+    public ResponseEntity<PlayerDetails> getPlayerDetailsByPlayerId(
+            @PathParam("playerId") String playerId
     ) {
-        PlayerPersonalData playerPersonalData = playerService.fetchPlayerDetailsById(playerID);
+        PlayerDetails playerDetails = playerService.fetchPlayerDetailsById(playerId);
 
-        return new ResponseEntity<>(playerPersonalData, HttpStatus.OK);
+        if (playerDetails != null) {
+            return new ResponseEntity<>(playerDetails, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 //    @GetMapping("/{nickname}")

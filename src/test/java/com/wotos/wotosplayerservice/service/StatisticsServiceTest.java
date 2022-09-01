@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
-import com.wotos.wotosplayerservice.dto.TankStatistics;
+import com.wotos.wotosplayerservice.util.model.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
 import org.junit.Before;
@@ -113,7 +113,7 @@ public class StatisticsServiceTest {
 
         try {
             JsonNode jsonData = mapper.readTree(responseEntityBody).get("data").get(TEST_WOT_ACCOUNT_ID);
-            TankStatistics tankStatistics = mapper.treeToValue(jsonData.get(0), TankStatistics.class);
+            VehicleStatistics tankStatistics = mapper.treeToValue(jsonData.get(0), VehicleStatistics.class);
         } catch (JsonProcessingException e) {
             System.out.println(Arrays.toString(e.getStackTrace()));
             fail("Failed to parse Json data from WOT API");

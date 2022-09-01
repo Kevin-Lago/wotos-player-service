@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
-import com.wotos.wotosplayerservice.dto.TankStatistics;
+import com.wotos.wotosplayerservice.util.model.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
+import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -27,12 +29,17 @@ public class StatisticsService {
     private final ObjectMapper mapper = new ObjectMapper();
     private final RestTemplate restTemplate = new RestTemplate();
 
+    @Value("${env.app_id}")
+    private String APP_ID;
     @Value("${env.snapshot_rate}")
     private Integer SNAPSHOT_RATE;
     @Value("${env.urls.expected_statistics}")
     private String EXPECTED_STATISTICS_URL;
     @Value("${env.urls.wot_tank_statistics}")
     private String WOT_TANK_STATISTICS_URL;
+
+    @Autowired
+    WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
 
     private final StatisticsSnapshotsRepository statisticsSnapshotsRepository;
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
@@ -62,7 +69,7 @@ public class StatisticsService {
     }
 
     private void generatePlayerTankStatistics(Integer accountId, Integer tankId) {
-        TankStatistics tankStatistics = fetchTankStatisticsByPlayerAndTankId(accountId, tankId);
+        VehicleStatistics tankStatistics = fetchTankStatisticsByPlayerAndTankId(accountId, tankId);
         assert tankStatistics != null;
 
         Optional<Integer> optionalTotalBattles = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(accountId, tankId);
@@ -93,7 +100,7 @@ public class StatisticsService {
     }
 
     private void generateAllPlayerTankStatistics(Integer accountId) {
-        List<TankStatistics> tanksStatistics = fetchAllTankStatisticsByPlayerID(accountId);
+        List<VehicleStatistics> tanksStatistics = fetchAllTankStatisticsByPlayerID(accountId.toString());
 
         tanksStatistics.forEach(tankStatistics -> {
             Optional<Integer> optionalTotalBattles = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(accountId, tankStatistics.getTankId());
@@ -126,7 +133,7 @@ public class StatisticsService {
     }
 
     private StatisticsSnapshot calculateTankStatisticsSnapshot(
-            @NotNull TankStatistics tankStatistics,
+            @NotNull VehicleStatistics tankStatistics,
             @NotNull ExpectedStatistics expectedStatistics
     ) {
         float wins = tankStatistics.getAll().getWins();
@@ -236,16 +243,19 @@ public class StatisticsService {
         }
     }
 
-    private List<TankStatistics> fetchAllTankStatisticsByPlayerID(Integer accountId) {
-        String result = restTemplate.getForObject(WOT_TANK_STATISTICS_URL + "&account_id=" + accountId, String.class);
-        List<TankStatistics> tankStats = new ArrayList<>();
+    private List<VehicleStatistics> fetchAllTankStatisticsByPlayerID(String accountId) {
+        String result = restTemplate.getForObject(WOT_TANK_STATISTICS_URL, String.class, APP_ID, "en", accountId, "");
+//        String result = wotPlayerVehiclesFeignClient.getPlayerTankStatistics(
+//                APP_ID, accountId, "", "", "", "", "en", ""
+//        ).getBody();
+        List<VehicleStatistics> tankStats = new ArrayList<>();
 
         try {
             JsonNode data = mapper.readTree(result).get("data").get(String.valueOf(accountId));
 
             data.forEach(value -> {
                 try {
-                    tankStats.add(mapper.treeToValue(value, TankStatistics.class));
+                    tankStats.add(mapper.treeToValue(value, VehicleStatistics.class));
                 } catch (JsonProcessingException e) {
                     System.out.println("Error processing tank statistics JSON: " + e.getMessage());
                 }
@@ -257,16 +267,14 @@ public class StatisticsService {
         return tankStats;
     }
 
-    private TankStatistics fetchTankStatisticsByPlayerAndTankId(int accountId, int tankId) {
-        String result = restTemplate.getForObject(
-                WOT_TANK_STATISTICS_URL + "&account_id=" + accountId + "&tank_id=" + tankId, String.class
-        );
+    private VehicleStatistics fetchTankStatisticsByPlayerAndTankId(int accountId, int tankId) {
+        String result = restTemplate.getForObject(WOT_TANK_STATISTICS_URL, String.class, APP_ID, "en", accountId, tankId);
 
         try {
             JsonNode data = mapper.readTree(result).get("data");
             JsonNode tankData = data.get(String.valueOf(accountId)).get(0);
 
-            return mapper.treeToValue(tankData, TankStatistics.class);
+            return mapper.treeToValue(tankData, VehicleStatistics.class);
         } catch (IOException e) {
             System.out.println("Error processing tank statistics with tankId: " + tankId + " and accountId: " + accountId + " " + e.getMessage());
 

@@ -1,8 +1,8 @@
-package com.wotos.wotosplayerservice.dto;
+package com.wotos.wotosplayerservice.util.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Statistics {
+public class PlayerStatistics {
 
     private Integer spotted;
     private Integer battles;

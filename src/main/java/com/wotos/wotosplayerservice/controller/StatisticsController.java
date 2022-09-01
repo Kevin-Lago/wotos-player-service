@@ -13,14 +13,17 @@ import javax.websocket.server.PathParam;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stats")
+@RequestMapping("/api/stats")
 public class StatisticsController {
 
     @Autowired
     StatisticsService statisticsService;
 
     @GetMapping("/tank")
-    public ResponseEntity<List<StatisticsSnapshot>> getTankStatisticsByPlayer(@PathParam("playerId") Integer playerId, @PathParam("tankId") Integer tankId) {
+    public ResponseEntity<List<StatisticsSnapshot>> getTankStatisticsByPlayer(
+            @PathParam("playerId") Integer playerId,
+            @PathParam("tankId") Integer tankId
+    ) {
         List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(playerId, tankId);
 
         if (statisticsSnapshots.size() > 0) {
@@ -31,7 +34,9 @@ public class StatisticsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<StatisticsSnapshot>> getAllTankStatisticsByPlayer(@PathParam("playerId") Integer playerId) {
+    public ResponseEntity<List<StatisticsSnapshot>> getAllTankStatisticsByPlayer(
+            @PathParam("playerId") Integer playerId
+    ) {
         List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(playerId);
 
         if (statisticsSnapshots.size() > 0) {
