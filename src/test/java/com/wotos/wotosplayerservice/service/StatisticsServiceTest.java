@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
-import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
+import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
 import com.wotos.wotosplayerservice.util.model.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
@@ -59,7 +59,7 @@ public class StatisticsServiceTest {
 
     @Before
     public void setUp() {
-        List<StatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
+        List<VehicleStatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
         statisticsSnapshotList.forEach(statisticsSnapshot ->
                 statisticsSnapshotsRepository.delete(statisticsSnapshot)
         );
@@ -127,7 +127,7 @@ public class StatisticsServiceTest {
     public void testGetPlayerTankStatistics() {
         statisticsSnapshotsRepository.save(buildRandomStatisticSnapshot(1, 1, 1));
 
-        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(1, 1);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(1, 1);
         assertThat(statisticsSnapshots).isNotNull();
         assertThat(statisticsSnapshots.size()).isEqualTo(1);
     }
@@ -138,13 +138,13 @@ public class StatisticsServiceTest {
         statisticsSnapshotsRepository.save(buildRandomStatisticSnapshot(1,1,1));
         statisticsSnapshotsRepository.save(buildRandomStatisticSnapshot(1,1,1));
 
-        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(1);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(1);
         assertThat(statisticsSnapshots).isNotNull();
         assertThat(statisticsSnapshots.size()).isEqualTo(3);
     }
 
-    private StatisticsSnapshot buildRandomStatisticSnapshot(Integer playerId, Integer tankId, Integer totalBattles) {
-        StatisticsSnapshot statisticsSnapshot = new StatisticsSnapshot();
+    private VehicleStatisticsSnapshot buildRandomStatisticSnapshot(Integer playerId, Integer tankId, Integer totalBattles) {
+        VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
 
         statisticsSnapshot.setPlayerId(playerId);
         statisticsSnapshot.setTankId(tankId);

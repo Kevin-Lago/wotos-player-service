@@ -1,6 +1,6 @@
 package com.wotos.wotosplayerservice.controller;
 
-import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
+import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
 import com.wotos.wotosplayerservice.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,11 +20,11 @@ public class StatisticsController {
     StatisticsService statisticsService;
 
     @GetMapping("/tank")
-    public ResponseEntity<List<StatisticsSnapshot>> getTankStatisticsByPlayer(
+    public ResponseEntity<List<VehicleStatisticsSnapshot>> getTankStatisticsByPlayer(
             @PathParam("playerId") Integer playerId,
             @PathParam("tankId") Integer tankId
     ) {
-        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(playerId, tankId);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = statisticsService.getPlayerTankStatistics(playerId, tankId);
 
         if (statisticsSnapshots.size() > 0) {
             return new ResponseEntity<>(statisticsSnapshots, HttpStatus.FOUND);
@@ -34,10 +34,10 @@ public class StatisticsController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<StatisticsSnapshot>> getAllTankStatisticsByPlayer(
+    public ResponseEntity<List<VehicleStatisticsSnapshot>> getAllTankStatisticsByPlayer(
             @PathParam("playerId") Integer playerId
     ) {
-        List<StatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(playerId);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = statisticsService.getAllPlayerTankStatistics(playerId);
 
         if (statisticsSnapshots.size() > 0) {
             return new ResponseEntity<>(statisticsSnapshots, HttpStatus.FOUND);

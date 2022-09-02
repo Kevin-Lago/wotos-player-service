@@ -6,11 +6,11 @@ import java.util.Map;
 
 public class Achievements {
 
-    Map<String, Map<String, Integer>> achievements;
-    Map<String, Map<String, Integer>> series;
-    Map<String, Map<String, Integer>> frags;
+    private Map<String, Map<String, Integer>> achievements;
+    private Map<String, Map<String, Integer>> series;
+    private Map<String, Map<String, Integer>> frags;
     @JsonProperty("max_series")
-    Map<String, Map<String, Integer>> maxSeries;
+    private Map<String, Map<String, Integer>> maxSeries;
 
     public Map<String, Map<String, Integer>> getAchievements() {
         return achievements;

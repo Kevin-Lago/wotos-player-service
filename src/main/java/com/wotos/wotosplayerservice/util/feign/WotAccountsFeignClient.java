@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @FeignClient(name = "WotAccountsFeignClient", url = "${env.urls.world_of_tanks_api}")
 @RequestMapping("/account")

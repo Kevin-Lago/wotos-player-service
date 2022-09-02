@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
-import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
+import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
 import com.wotos.wotosplayerservice.util.model.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
@@ -76,7 +76,7 @@ public class StatisticsService {
         ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(tankStatistics.getTankId()).orElse(null);
         assert expectedStatistics != null;
 
-        StatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
+        VehicleStatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
 
         Integer totalBattles = optionalTotalBattles.orElseGet(() -> {
             statisticsSnapshotsRepository.save(statisticsSnapshot);
@@ -89,8 +89,8 @@ public class StatisticsService {
         }
     }
 
-    public List<StatisticsSnapshot> getPlayerTankStatistics(Integer accountId, Integer tankId) {
-        Optional<List<StatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerIdAndTankId(accountId, tankId);
+    public List<VehicleStatisticsSnapshot> getPlayerTankStatistics(Integer accountId, Integer tankId) {
+        Optional<List<VehicleStatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerIdAndTankId(accountId, tankId);
 
         return statisticsSnapshots.orElseGet(() -> {
             this.generatePlayerTankStatistics(accountId, tankId);
@@ -107,7 +107,7 @@ public class StatisticsService {
             ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(tankStatistics.getTankId()).orElse(null);
             assert expectedStatistics != null;
 
-            StatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
+            VehicleStatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
 
             Integer totalBattles = optionalTotalBattles.orElseGet(() -> {
                 statisticsSnapshotsRepository.save(statisticsSnapshot);
@@ -121,8 +121,8 @@ public class StatisticsService {
         });
     }
 
-    public List<StatisticsSnapshot> getAllPlayerTankStatistics(Integer accountId) {
-        Optional<List<StatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(accountId);
+    public List<VehicleStatisticsSnapshot> getAllPlayerTankStatistics(Integer accountId) {
+        Optional<List<VehicleStatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(accountId);
 
         // I'll need to calculate battle difference here
         return statisticsSnapshots.orElseGet(() -> {
@@ -132,7 +132,7 @@ public class StatisticsService {
         });
     }
 
-    private StatisticsSnapshot calculateTankStatisticsSnapshot(
+    private VehicleStatisticsSnapshot calculateTankStatisticsSnapshot(
             @NotNull VehicleStatistics tankStatistics,
             @NotNull ExpectedStatistics expectedStatistics
     ) {
@@ -192,13 +192,13 @@ public class StatisticsService {
         );
     }
 
-    private StatisticsSnapshot buildTankStatisticsSnapshot(
+    private VehicleStatisticsSnapshot buildTankStatisticsSnapshot(
             Integer accountId, Integer tankId, Float wn8, Integer battles, Float killDeathRatio, Float hitMissRatio, Float winLossRatio,
             Float averageExperiencePerGame, Float averageDamagePerGame, Float averageKillsPerGame,
             Float averageDamageReceivedPerGame, Float averageShotsPerGame, Float averageStunAssistedDamage,
             Float averageCapturePointsPerGame, Float averageDroppedCapturePoints, Integer survivedBattles
     ) {
-        StatisticsSnapshot statisticsSnapshot = new StatisticsSnapshot();
+        VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
 
         statisticsSnapshot.setPlayerId(accountId);
         statisticsSnapshot.setTankId(tankId);

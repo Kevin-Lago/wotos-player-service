@@ -80,18 +80,15 @@ public class PlayerService {
             return player;
         } catch (IOException e) {
             System.out.println(e.getMessage());
+
             return null;
-//            return new ResponseEntity<>(httpHeaders, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     public PlayerDetails fetchPlayerDetailsById(String accountId) {
-        try {
-            return wotPlayerApi.getPlayerDetails("", "en", accountId).getBody().getData().get(accountId);
-        } catch (NullPointerException e) {
-            System.out.println("Null Response Body");
-            return null;
-        }
+        return Objects.requireNonNull(
+                wotPlayerApi.getPlayerDetails(APP_ID, "en", accountId).getBody()
+        ).getData().get(accountId);
     }
 
 }

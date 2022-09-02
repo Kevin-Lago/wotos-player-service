@@ -3,12 +3,12 @@ package com.wotos.wotosplayerservice.dao;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "statistics_snapshots")
-public class StatisticsSnapshot {
+@Table(name = "vehicle_statistics_snapshots")
+public class VehicleStatisticsSnapshot {
     @Id
     @GeneratedValue
-    @Column(name = "statistics_snapshot_id")
-    private Integer StatisticsSnapshotId;
+    @Column(name = "vehicle_statistics_snapshot_id")
+    private Integer vehicleStatisticsSnapshotId;
     @Column(name = "player_id", nullable = false)
     private Integer playerId;
     @Column(name = "tank_id", nullable = false)
@@ -41,15 +41,13 @@ public class StatisticsSnapshot {
     private Float averageCapturePoints;
     @Column(name = "dropped_capture_points", nullable = false)
     private Float averageDroppedCapturePoints;
-    @Column(name = "personal_rating")
-    private Integer personalRating;
 
-    public Integer getStatisticsSnapshotId() {
-        return StatisticsSnapshotId;
+    public Integer getVehicleStatisticsSnapshotId() {
+        return vehicleStatisticsSnapshotId;
     }
 
-    public void setStatisticsSnapshotId(Integer statisticsSnapshotId) {
-        StatisticsSnapshotId = statisticsSnapshotId;
+    public void setVehicleStatisticsSnapshotId(Integer vehicleStatisticsSnapshotId) {
+        this.vehicleStatisticsSnapshotId = vehicleStatisticsSnapshotId;
     }
 
     public Integer getPlayerId() {
@@ -178,13 +176,5 @@ public class StatisticsSnapshot {
 
     public void setAverageDroppedCapturePoints(Float averageDroppedCapturePoints) {
         this.averageDroppedCapturePoints = averageDroppedCapturePoints;
-    }
-
-    public Integer getPersonalRating() {
-        return personalRating;
-    }
-
-    public void setPersonalRating(Integer personalRating) {
-        this.personalRating = personalRating;
     }
 }

@@ -6,11 +6,11 @@ import java.util.Map;
 
 public class PlayerVehicle {
 
-    Map<String, Integer> statistics;
+    private Map<String, Integer> statistics;
     @JsonProperty("marks_of_mastery")
-    Integer MarksOfMastery;
+    private Integer MarksOfMastery;
     @JsonProperty("tank_id")
-    Integer tankId;
+    private Integer tankId;
 
     public Map<String, Integer> getStatistics() {
         return statistics;

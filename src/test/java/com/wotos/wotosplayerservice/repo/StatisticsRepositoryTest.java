@@ -1,6 +1,6 @@
 package com.wotos.wotosplayerservice.repo;
 
-import com.wotos.wotosplayerservice.dao.StatisticsSnapshot;
+import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,61 +26,61 @@ public class StatisticsRepositoryTest {
     @Before
     public void setUp() {
 
-        List<StatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
+        List<VehicleStatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
         statisticsSnapshotList.forEach(statisticsSnapshot -> statisticsSnapshotsRepository.delete(statisticsSnapshot));
 
     }
 
     @Test
     public void saveGetAndDeleteStatisticSnapshotTest() {
-        StatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 100);
+        VehicleStatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 100);
 
         statisticsSnapshotsRepository.save(statisticsSnapshot);
-        Optional<List<StatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(statisticsSnapshot.getPlayerId());
-        StatisticsSnapshot statisticsSnapshotFromRepo = optionalStatisticsSnapshots.orElse(new ArrayList<>()).get(0);
+        Optional<List<VehicleStatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(statisticsSnapshot.getPlayerId());
+        VehicleStatisticsSnapshot statisticsSnapshotFromRepo = optionalStatisticsSnapshots.orElse(new ArrayList<>()).get(0);
 
         assertThat(statisticsSnapshotFromRepo).isEqualToComparingFieldByField(statisticsSnapshot);
 
         statisticsSnapshotsRepository.delete(statisticsSnapshot);
 
-        StatisticsSnapshot deletedStatisticsSnapshot = statisticsSnapshotsRepository.findById(statisticsSnapshotFromRepo.getStatisticsSnapshotId()).orElse(null);
+        VehicleStatisticsSnapshot deletedStatisticsSnapshot = statisticsSnapshotsRepository.findById(statisticsSnapshotFromRepo.getVehicleStatisticsSnapshotId()).orElse(null);
 
         assertNull(deletedStatisticsSnapshot);
     }
 
     @Test
     public void testFindAllStatisticsSnapshotsByPlayerId() {
-        StatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
+        VehicleStatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(2, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
 
-        Optional<List<StatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(1);
-        List<StatisticsSnapshot> statisticsSnapshots = optionalStatisticsSnapshots.orElse(new ArrayList<>());
+        Optional<List<VehicleStatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(1);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = optionalStatisticsSnapshots.orElse(new ArrayList<>());
 
         assertThat(statisticsSnapshots.size()).isEqualTo(2);
     }
 
     @Test
     public void testFindAllStatisticsSnapshotsByPlayerIdAndTankId() {
-        StatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
+        VehicleStatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 2, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
 
-        Optional<List<StatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerIdAndTankId(1, 1);
-        List<StatisticsSnapshot> statisticsSnapshots = optionalStatisticsSnapshots.orElse(new ArrayList<>());
+        Optional<List<VehicleStatisticsSnapshot>> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerIdAndTankId(1, 1);
+        List<VehicleStatisticsSnapshot> statisticsSnapshots = optionalStatisticsSnapshots.orElse(new ArrayList<>());
 
         assertThat(statisticsSnapshots.size()).isEqualTo(2);
     }
 
     @Test
     public void testFindHighestTotalBattlesByPlayerAndTankId() {
-        StatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
+        VehicleStatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 2);
         statisticsSnapshotsRepository.save(statisticsSnapshot);
@@ -93,8 +93,8 @@ public class StatisticsRepositoryTest {
         assertThat(highestBattles).isEqualTo(3);
     }
 
-    private StatisticsSnapshot buildRandomStatisticSnapshot(Integer playerId, Integer tankId, Integer totalBattles) {
-        StatisticsSnapshot statisticsSnapshot = new StatisticsSnapshot();
+    private VehicleStatisticsSnapshot buildRandomStatisticSnapshot(Integer playerId, Integer tankId, Integer totalBattles) {
+        VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
         Random rng = new Random();
 
         statisticsSnapshot.setPlayerId(playerId);
