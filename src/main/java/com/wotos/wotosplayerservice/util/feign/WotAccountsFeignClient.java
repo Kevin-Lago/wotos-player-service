@@ -1,14 +1,17 @@
 package com.wotos.wotosplayerservice.util.feign;
 
-import com.wotos.wotosplayerservice.util.model.*;
+import com.wotos.wotosplayerservice.config.FeignConfig;
+import com.wotos.wotosplayerservice.util.model.wot.*;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "WotAccountsFeignClient", url = "${env.urls.world_of_tanks_api}")
+@FeignClient(name = "WotAccountsFeignClient", url = "${env.urls.world_of_tanks_api}", configuration = FeignConfig.class)
 @RequestMapping("/account")
 public interface WotAccountsFeignClient {
 

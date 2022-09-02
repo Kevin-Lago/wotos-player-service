@@ -3,7 +3,7 @@ package com.wotos.wotosplayerservice.dao;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "player_statistics_snapshots")
+@Table(schema = "wotos_player_db", name = "player_statistics_snapshots")
 public class PlayerStatisticsSnapshot {
     @Id
     @GeneratedValue

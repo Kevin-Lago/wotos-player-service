@@ -1,45 +1,35 @@
 package com.wotos.wotosplayerservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.istack.NotNull;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
-import com.wotos.wotosplayerservice.util.model.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
 import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
+import com.wotos.wotosplayerservice.util.feign.XvmExpectedStatisticsFeignClient;
+import com.wotos.wotosplayerservice.util.model.wot.VehicleStatistics;
+import com.wotos.wotosplayerservice.util.model.xvm.XvmExpectedStatistics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StatisticsService {
-
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final RestTemplate restTemplate = new RestTemplate();
 
     @Value("${env.app_id}")
     private String APP_ID;
     @Value("${env.snapshot_rate}")
     private Integer SNAPSHOT_RATE;
-    @Value("${env.urls.expected_statistics}")
-    private String EXPECTED_STATISTICS_URL;
-    @Value("${env.urls.wot_tank_statistics}")
-    private String WOT_TANK_STATISTICS_URL;
 
     @Autowired
     WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
+    @Autowired
+    XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
 
     private final StatisticsSnapshotsRepository statisticsSnapshotsRepository;
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
@@ -47,12 +37,9 @@ public class StatisticsService {
     public StatisticsService(
             StatisticsSnapshotsRepository statisticsSnapshotsRepository,
             ExpectedStatisticsRepository expectedStatisticsRepository
-            ) {
+    ) {
         this.statisticsSnapshotsRepository = statisticsSnapshotsRepository;
         this.expectedStatisticsRepository = expectedStatisticsRepository;
-        mapper.configure(
-                DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true
-        );
     }
 
     @PostConstruct
@@ -60,76 +47,32 @@ public class StatisticsService {
         List<ExpectedStatistics> expectedStatistics = expectedStatisticsRepository.findAll();
 
         if (expectedStatistics.size() == 0) {
-            expectedStatistics = fetchExpectedStatistics();
-
-            for (ExpectedStatistics expectedStatistic : expectedStatistics) {
-                expectedStatisticsRepository.save(expectedStatistic);
-            }
+            saveExpectedStatistics();
         }
     }
 
-    private void generatePlayerTankStatistics(Integer accountId, Integer tankId) {
-        VehicleStatistics tankStatistics = fetchTankStatisticsByPlayerAndTankId(accountId, tankId);
-        assert tankStatistics != null;
+    public ResponseEntity<Map<Integer, List<VehicleStatisticsSnapshot>>> getPlayerTankStatistics(List<Integer> accountIds, List<Integer> tankIds) {
+        Map<Integer, List<VehicleStatisticsSnapshot>> statisticsSnapshotsMap = new HashMap<>();
 
-        Optional<Integer> optionalTotalBattles = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(accountId, tankId);
-        ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(tankStatistics.getTankId()).orElse(null);
-        assert expectedStatistics != null;
+        for (Integer accountId : accountIds) {
+            List<VehicleStatistics> vehicleStatistics = fetchTankStatistics(accountId, "", "", "", null, "", tankIds);
 
-        VehicleStatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
+            for (VehicleStatistics vehicle : vehicleStatistics) {
+                Integer maxBattles = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(accountId, vehicle.getTankId()).orElse(0);
 
-        Integer totalBattles = optionalTotalBattles.orElseGet(() -> {
-            statisticsSnapshotsRepository.save(statisticsSnapshot);
-
-            return statisticsSnapshot.getTotalBattles();
-        });
-
-        if (tankStatistics.getAll().getBattles() - totalBattles >= SNAPSHOT_RATE) {
-            statisticsSnapshotsRepository.save(statisticsSnapshot);
-        }
-    }
-
-    public List<VehicleStatisticsSnapshot> getPlayerTankStatistics(Integer accountId, Integer tankId) {
-        Optional<List<VehicleStatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerIdAndTankId(accountId, tankId);
-
-        return statisticsSnapshots.orElseGet(() -> {
-            this.generatePlayerTankStatistics(accountId, tankId);
-
-            return statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(accountId).orElse(null);
-        });
-    }
-
-    private void generateAllPlayerTankStatistics(Integer accountId) {
-        List<VehicleStatistics> tanksStatistics = fetchAllTankStatisticsByPlayerID(accountId.toString());
-
-        tanksStatistics.forEach(tankStatistics -> {
-            Optional<Integer> optionalTotalBattles = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(accountId, tankStatistics.getTankId());
-            ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(tankStatistics.getTankId()).orElse(null);
-            assert expectedStatistics != null;
-
-            VehicleStatisticsSnapshot statisticsSnapshot = calculateTankStatisticsSnapshot(tankStatistics, expectedStatistics);
-
-            Integer totalBattles = optionalTotalBattles.orElseGet(() -> {
-                statisticsSnapshotsRepository.save(statisticsSnapshot);
-
-                return statisticsSnapshot.getTotalBattles();
-            });
-
-            if (tankStatistics.getAll().getBattles() - totalBattles >= SNAPSHOT_RATE) {
-                statisticsSnapshotsRepository.save(statisticsSnapshot);
+                if (vehicle.getAll().getBattles() - maxBattles > SNAPSHOT_RATE) {
+                    ExpectedStatistics expectedStatistics = expectedStatisticsRepository.getOne(vehicle.getTankId());
+                    statisticsSnapshotsRepository.save(calculateTankStatisticsSnapshot(vehicle, expectedStatistics));
+                }
             }
-        });
-    }
 
-    public List<VehicleStatisticsSnapshot> getAllPlayerTankStatistics(Integer accountId) {
-        Optional<List<VehicleStatisticsSnapshot>> statisticsSnapshots = statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(accountId);
+            List<VehicleStatisticsSnapshot> vehicleStatisticsSnapshots = statisticsSnapshotsRepository.findByPlayerIdAndTankIdIn(
+                    accountId, tankIds
+            ).orElse(new ArrayList<>());
+            statisticsSnapshotsMap.put(accountId, vehicleStatisticsSnapshots);
+        }
 
-        // I'll need to calculate battle difference here
-        return statisticsSnapshots.orElseGet(() -> {
-            this.generateAllPlayerTankStatistics(accountId);
-
-            return statisticsSnapshotsRepository.findAllStatisticsSnapshotsByPlayerId(accountId).orElse(null);
-        });
+        return new ResponseEntity<>(statisticsSnapshotsMap, HttpStatus.OK);
     }
 
     private VehicleStatisticsSnapshot calculateTankStatisticsSnapshot(
@@ -167,11 +110,11 @@ public class StatisticsService {
 
         float tune = 10000;
 
-        float DAMAGE = Math.round((averageDamagePerGame / expectedStatistics.getExpected_damage()) * tune) / tune;
-        float SPOT = Math.round((averageSpottingPerGame / expectedStatistics.getExpected_spot()) * tune) / tune;
-        float FRAG = Math.round((averageKillsPerGame / expectedStatistics.getExpected_frag()) * tune) / tune;
-        float DEFENSE = Math.round(((defense / battles) / expectedStatistics.getExpected_defense()) * tune) / tune;
-        float WIN = Math.round((winLossRatio / expectedStatistics.getExpected_win_rate()) * (tune * 100)) / tune;
+        float DAMAGE = Math.round((averageDamagePerGame / expectedStatistics.getExpectedDamage()) * tune) / tune;
+        float SPOT = Math.round((averageSpottingPerGame / expectedStatistics.getExpectedSpot()) * tune) / tune;
+        float FRAG = Math.round((averageKillsPerGame / expectedStatistics.getExpectedFrag()) * tune) / tune;
+        float DEFENSE = Math.round(((defense / battles) / expectedStatistics.getExpectedDefense()) * tune) / tune;
+        float WIN = Math.round((winLossRatio / expectedStatistics.getExpectedWinRate()) * (tune * 100)) / tune;
 
         float DAMAGEc = (float) Math.max(0, (DAMAGE - 0.22) / 0.78);
         float SPOTc = (float) Math.max(0, Math.min(DAMAGEc + 0.1, (SPOT - 0.38) / 0.62));
@@ -184,7 +127,7 @@ public class StatisticsService {
         Integer tankId = tankStatistics.getTankId();
         Integer accountId = tankStatistics.getAccountId();
 
-        return buildTankStatisticsSnapshot(
+        return buildVehicleStatisticsSnapshot(
                 accountId, tankId, wn8, (int) battles, killDeathRatio, hitMissRatio, winLossRatio,
                 averageExperiencePerGame, averageDamagePerGame, averageKillsPerGame,
                 averageDamageReceivedPerGame, averageShotsPerGame, averageStunAssistedDamage,
@@ -192,7 +135,7 @@ public class StatisticsService {
         );
     }
 
-    private VehicleStatisticsSnapshot buildTankStatisticsSnapshot(
+    private VehicleStatisticsSnapshot buildVehicleStatisticsSnapshot(
             Integer accountId, Integer tankId, Float wn8, Integer battles, Float killDeathRatio, Float hitMissRatio, Float winLossRatio,
             Float averageExperiencePerGame, Float averageDamagePerGame, Float averageKillsPerGame,
             Float averageDamageReceivedPerGame, Float averageShotsPerGame, Float averageStunAssistedDamage,
@@ -220,71 +163,37 @@ public class StatisticsService {
         return statisticsSnapshot;
     }
 
-    private List<ExpectedStatistics> fetchExpectedStatistics() {
-        String result = restTemplate.getForObject(EXPECTED_STATISTICS_URL, String.class);
-        List<ExpectedStatistics> expectedStatistics = new ArrayList<>();
-
-        try {
-            JsonNode data = mapper.readTree(result).get("data");
-
-            data.forEach(value -> {
-                try {
-                    ExpectedStatistics expectedStatistic = mapper.treeToValue(value, ExpectedStatistics.class);
-                    expectedStatistics.add(expectedStatistic);
-                } catch (JsonProcessingException e) {
-                    System.out.println("Error parsing Expected Statistics with values: " + value.toString() + "\n" + Arrays.toString(e.getStackTrace()));
-                }
-            });
-
-            return expectedStatistics;
-        } catch(IOException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+    private List<XvmExpectedStatistics> fetchExpectedStatistics() {
+        return Objects.requireNonNull(
+                xvmExpectedStatisticsFeignClient.getExpectedStatistics().getBody()
+        ).getData();
     }
 
-    private List<VehicleStatistics> fetchAllTankStatisticsByPlayerID(String accountId) {
-        String result = restTemplate.getForObject(WOT_TANK_STATISTICS_URL, String.class, APP_ID, "en", accountId, "");
-//        String result = wotPlayerVehiclesFeignClient.getPlayerTankStatistics(
-//                APP_ID, accountId, "", "", "", "", "en", ""
-//        ).getBody();
-        List<VehicleStatistics> tankStats = new ArrayList<>();
+    private void saveExpectedStatistics() {
+        fetchExpectedStatistics().forEach(xvm -> {
+            ExpectedStatistics expectedStatistics = new ExpectedStatistics();
 
-        try {
-            JsonNode data = mapper.readTree(result).get("data").get(String.valueOf(accountId));
+            expectedStatistics.setTankId(xvm.getTankId());
+            expectedStatistics.setExpectedDefense(xvm.getExpectedDefense());
+            expectedStatistics.setExpectedFrag(xvm.getExpectedFrag());
+            expectedStatistics.setExpectedSpot(xvm.getExpectedSpot());
+            expectedStatistics.setExpectedDamage(xvm.getExpectedDamage());
+            expectedStatistics.setExpectedWinRate(xvm.getExpectedWinRate());
 
-            data.forEach(value -> {
-                try {
-                    tankStats.add(mapper.treeToValue(value, VehicleStatistics.class));
-                } catch (JsonProcessingException e) {
-                    System.out.println("Error processing tank statistics JSON: " + e.getMessage());
-                }
-            });
-        } catch (IOException e) {
-            System.out.println("Error parsing fetched player data: " + e.getMessage());
-        }
-
-        return tankStats;
+            expectedStatisticsRepository.save(expectedStatistics);
+        });
     }
 
-    private VehicleStatistics fetchTankStatisticsByPlayerAndTankId(int accountId, int tankId) {
-        String result = restTemplate.getForObject(WOT_TANK_STATISTICS_URL, String.class, APP_ID, "en", accountId, tankId);
+    private List<VehicleStatistics> fetchTankStatistics(
+            Integer accountId, String accessToken, String extra,
+            String fields, Integer inGarage, String language, List<Integer> tankIds
+    ) {
+        Integer[] array = new Integer[tankIds.size()];
+        tankIds.toArray(array);
 
-        try {
-            JsonNode data = mapper.readTree(result).get("data");
-            JsonNode tankData = data.get(String.valueOf(accountId)).get(0);
-
-            return mapper.treeToValue(tankData, VehicleStatistics.class);
-        } catch (IOException e) {
-            System.out.println("Error processing tank statistics with tankId: " + tankId + " and accountId: " + accountId + " " + e.getMessage());
-
-            return null;
-        } catch (NullPointerException e) {
-            System.out.println("Tank data with tank id " + tankId + " does not exist for account id " + accountId);
-
-            return null;
-        }
-
+        return Objects.requireNonNull(
+                wotPlayerVehiclesFeignClient.getPlayerTankStatistics(APP_ID, accountId, accessToken, extra, fields, inGarage, language, array).getBody()
+        ).getData().get(accountId);
     }
 
 }

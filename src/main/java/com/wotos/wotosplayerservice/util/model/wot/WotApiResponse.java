@@ -1,4 +1,4 @@
-package com.wotos.wotosplayerservice.util.model;
+package com.wotos.wotosplayerservice.util.model.wot;
 
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
