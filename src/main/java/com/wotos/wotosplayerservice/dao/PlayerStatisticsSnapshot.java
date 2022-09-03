@@ -8,7 +8,7 @@ public class PlayerStatisticsSnapshot {
     @Id
     @GeneratedValue
     @Column(name = "player_statistics_snapshot_id")
-    private Integer playerStatisticsSnapshot;
+    private Integer playerStatisticsSnapshotId;
     @Column(name = "player_id", nullable = false)
     private Integer playerId;
     @Column(name = "total_battles", nullable = false)
@@ -40,12 +40,12 @@ public class PlayerStatisticsSnapshot {
     @Column(name = "dropped_capture_points", nullable = false)
     private Float averageDroppedCapturePoints;
 
-    public Integer getPlayerStatisticsSnapshot() {
-        return playerStatisticsSnapshot;
+    public Integer getPlayerStatisticsSnapshotId() {
+        return playerStatisticsSnapshotId;
     }
 
-    public void setPlayerStatisticsSnapshot(Integer playerStatisticsSnapshot) {
-        this.playerStatisticsSnapshot = playerStatisticsSnapshot;
+    public void setPlayerStatisticsSnapshotId(Integer playerStatisticsSnapshotId) {
+        this.playerStatisticsSnapshotId = playerStatisticsSnapshotId;
     }
 
     public Integer getPlayerId() {
