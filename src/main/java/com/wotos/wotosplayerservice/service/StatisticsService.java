@@ -33,11 +33,11 @@ public class StatisticsService {
     private Integer SNAPSHOT_RATE;
 
     @Autowired
-    WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
+    private WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
     @Autowired
-    WotAccountsFeignClient wotAccountsFeignClient;
+    private WotAccountsFeignClient wotAccountsFeignClient;
     @Autowired
-    XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
+    private XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
 
     private final VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
     private final PlayerStatisticsSnapshotsRepository playerStatisticsSnapshotsRepository;
@@ -59,7 +59,7 @@ public class StatisticsService {
 
         // ToDo: Validate Expected Statistics is current/hasn't changed
         if (expectedStatistics.size() == 0) {
-            saveExpectedStatistics();
+            initExpectedStatistics();
         }
     }
 
@@ -84,7 +84,7 @@ public class StatisticsService {
         return new ResponseEntity<>(playerStatisticsSnapshotsMap, HttpStatus.OK);
     }
 
-    private PlayerStatisticsSnapshot calculatePlayerStatisticsSnapshot(PlayerDetails playerDetails) {
+    private static PlayerStatisticsSnapshot calculatePlayerStatisticsSnapshot(PlayerDetails playerDetails) {
         float wins = playerDetails.getStatistics().getAll().getWins();
         float battles = playerDetails.getStatistics().getAll().getBattles();
         float survivedBattles = playerDetails.getStatistics().getAll().getSurvivedBattles();
@@ -127,7 +127,7 @@ public class StatisticsService {
         );
     }
 
-    private PlayerStatisticsSnapshot buildPlayerStatisticsSnapshot(
+    private static PlayerStatisticsSnapshot buildPlayerStatisticsSnapshot(
             Integer accountId, Integer totalBattles, Integer survivedBattles, Float killDeathRatio,
             Float hitMissRatio, Float winLossRatio, Float averageWn8,
             Float averageExperience, Float averageDamage, Float averageKills,
@@ -190,7 +190,7 @@ public class StatisticsService {
         return new ResponseEntity<>(vehicleStatisticsSnapshotsMap, HttpStatus.OK);
     }
 
-    private VehicleStatisticsSnapshot calculateVehicleStatisticsSnapshot(
+    private static VehicleStatisticsSnapshot calculateVehicleStatisticsSnapshot(
             @NotNull VehicleStatistics vehicleStatistics,
             @NotNull ExpectedStatistics expectedStatistics
     ) {
@@ -249,7 +249,7 @@ public class StatisticsService {
         );
     }
 
-    private VehicleStatisticsSnapshot buildVehicleStatisticsSnapshot(
+    private static VehicleStatisticsSnapshot buildVehicleStatisticsSnapshot(
             Integer accountId, Integer vehicleId, Float wn8, Integer battles, Float killDeathRatio, Float hitMissRatio, Float winLossRatio,
             Float averageExperiencePerGame, Float averageDamagePerGame, Float averageKillsPerGame,
             Float averageDamageReceivedPerGame, Float averageShotsPerGame, Float averageStunAssistedDamage,
@@ -290,14 +290,17 @@ public class StatisticsService {
         ).getData().get(accountId);
     }
 
-    private List<XvmExpectedStatistics> fetchExpectedStatistics() {
-        return Objects.requireNonNull(
+    private void initExpectedStatistics() {
+        List<XvmExpectedStatistics> xvmExpectedStatistics = Objects.requireNonNull(
                 xvmExpectedStatisticsFeignClient.getExpectedStatistics().getBody()
         ).getData();
+        List<ExpectedStatistics> expectedStatistics = buildExpectedStatistics(xvmExpectedStatistics);
+
+        expectedStatistics.forEach(expectedStatisticsRepository::save);
     }
 
-    private void saveExpectedStatistics() {
-        List<XvmExpectedStatistics> xvmExpectedStatistics = fetchExpectedStatistics();
+    private static List<ExpectedStatistics> buildExpectedStatistics(List<XvmExpectedStatistics> xvmExpectedStatistics) {
+        List<ExpectedStatistics> expectedStatisticsList = new ArrayList<>();
 
         xvmExpectedStatistics.forEach(xvm -> {
             ExpectedStatistics expectedStatistics = new ExpectedStatistics();
@@ -309,8 +312,10 @@ public class StatisticsService {
             expectedStatistics.setExpectedDamage(xvm.getExpectedDamage());
             expectedStatistics.setExpectedWinRate(xvm.getExpectedWinRate());
 
-            expectedStatisticsRepository.save(expectedStatistics);
+            expectedStatisticsList.add(expectedStatistics);
         });
+
+        return expectedStatisticsList;
     }
 
 }
