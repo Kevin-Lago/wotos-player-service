@@ -16,6 +16,7 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -33,14 +34,13 @@ import static org.junit.Assert.fail;
 @SpringBootTest
 public class StatisticsServiceTest {
 
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final RestTemplate restTemplate = new RestTemplate();
-    private final Gson gson = new Gson();
     private final Random rng = new Random();
 
     @Autowired
+    @MockBean
     private VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
     @Autowired
+    @MockBean
     private ExpectedStatisticsRepository expectedStatisticsRepository;
 
     @InjectMocks
@@ -48,14 +48,6 @@ public class StatisticsServiceTest {
 
     @Value("${env.snapshot_rate}")
     private Integer SNAPSHOT_RATE;
-    @Value("${urls.expected_statistics}")
-    private String EXPECTED_STATISTICS_URL;
-    @Value("${urls.wot_tank_statistics}")
-    private String WOT_TANK_STATISTICS_URL;
-    @Value("${env.test_wot_account_id}")
-    private String TEST_WOT_ACCOUNT_ID;
-    @Value("${env.test_wot_tank_id}")
-    private String TEST_WOT_TANK_ID;
 
 //    @Before
 //    public void setUp() {
@@ -66,62 +58,60 @@ public class StatisticsServiceTest {
 //
 //        statisticsService = new StatisticsService(vehicleStatisticsSnapshotsRepository, expectedStatisticsRepository);
 //        ReflectionTestUtils.setField(statisticsService, "SNAPSHOT_RATE", SNAPSHOT_RATE);
-//        ReflectionTestUtils.setField(statisticsService, "EXPECTED_STATISTICS_URL", EXPECTED_STATISTICS_URL);
-//        ReflectionTestUtils.setField(statisticsService, "WOT_TANK_STATISTICS_URL", WOT_TANK_STATISTICS_URL);
 //    }
 
-    @Test
-    public void testExpectedStatisticsEndpoint() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(EXPECTED_STATISTICS_URL, HttpMethod.GET, entity, String.class);
-        HttpStatus status = responseEntity.getStatusCode();
-        String responseEntityBody = responseEntity.getBody(); // Validate the data structure hasnt changed
-
-        assertThat(status.value()).isEqualTo(200);
-
-        try {
-            JsonNode jsonData = mapper.readTree(responseEntityBody).get("data");
-
-            jsonData.forEach(value -> {
-                try {
-                    ExpectedStatistics expectedStatistic = mapper.treeToValue(value, ExpectedStatistics.class);
-                } catch (JsonProcessingException e) {
-                    System.out.println("Error parsing Expected Statistics with values: " + value.toString() + "\n" + Arrays.toString(e.getStackTrace()));
-                    fail("Failed to parse Json data from Expected Statistics Endpoint");
-                }
-            });
-        } catch(IOException e) {
-            System.out.println(e.getMessage());
-            fail("Missing field \"data\" in Expected Statistics Endpoint response");
-        }
-    }
-
-    @Test
-    public void testWotTankStatisticsEndpoint() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Object> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<String> responseEntity = restTemplate.exchange(WOT_TANK_STATISTICS_URL + "&account_id=" + TEST_WOT_ACCOUNT_ID + "&tank_id=" + TEST_WOT_TANK_ID, HttpMethod.GET, entity, String.class);
-        HttpStatus status = responseEntity.getStatusCode();
-        String responseEntityBody = responseEntity.getBody(); // Validate the data structure hasn't changed
-
-        assertThat(status.value()).isEqualTo(200);
-
-        try {
-            JsonNode jsonData = mapper.readTree(responseEntityBody).get("data").get(TEST_WOT_ACCOUNT_ID);
-            VehicleStatistics tankStatistics = mapper.treeToValue(jsonData.get(0), VehicleStatistics.class);
-        } catch (JsonProcessingException e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
-            fail("Failed to parse Json data from WOT API");
-        } catch (IOException e) {
-            System.out.println(Arrays.toString(e.getStackTrace()));
-            fail("Missing field \"accountId\" in Expected Statistics Endpoint response");
-        }
-    }
+//    @Test
+//    public void testExpectedStatisticsEndpoint() {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<Object> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(EXPECTED_STATISTICS_URL, HttpMethod.GET, entity, String.class);
+//        HttpStatus status = responseEntity.getStatusCode();
+//        String responseEntityBody = responseEntity.getBody(); // Validate the data structure hasnt changed
+//
+//        assertThat(status.value()).isEqualTo(200);
+//
+//        try {
+//            JsonNode jsonData = mapper.readTree(responseEntityBody).get("data");
+//
+//            jsonData.forEach(value -> {
+//                try {
+//                    ExpectedStatistics expectedStatistic = mapper.treeToValue(value, ExpectedStatistics.class);
+//                } catch (JsonProcessingException e) {
+//                    System.out.println("Error parsing Expected Statistics with values: " + value.toString() + "\n" + Arrays.toString(e.getStackTrace()));
+//                    fail("Failed to parse Json data from Expected Statistics Endpoint");
+//                }
+//            });
+//        } catch(IOException e) {
+//            System.out.println(e.getMessage());
+//            fail("Missing field \"data\" in Expected Statistics Endpoint response");
+//        }
+//    }
+//
+//    @Test
+//    public void testWotTankStatisticsEndpoint() {
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        HttpEntity<Object> entity = new HttpEntity<>(headers);
+//
+//        ResponseEntity<String> responseEntity = restTemplate.exchange(WOT_TANK_STATISTICS_URL + "&account_id=" + TEST_WOT_ACCOUNT_ID + "&tank_id=" + TEST_WOT_TANK_ID, HttpMethod.GET, entity, String.class);
+//        HttpStatus status = responseEntity.getStatusCode();
+//        String responseEntityBody = responseEntity.getBody(); // Validate the data structure hasn't changed
+//
+//        assertThat(status.value()).isEqualTo(200);
+//
+//        try {
+//            JsonNode jsonData = mapper.readTree(responseEntityBody).get("data").get(TEST_WOT_ACCOUNT_ID);
+//            VehicleStatistics tankStatistics = mapper.treeToValue(jsonData.get(0), VehicleStatistics.class);
+//        } catch (JsonProcessingException e) {
+//            System.out.println(Arrays.toString(e.getStackTrace()));
+//            fail("Failed to parse Json data from WOT API");
+//        } catch (IOException e) {
+//            System.out.println(Arrays.toString(e.getStackTrace()));
+//            fail("Missing field \"accountId\" in Expected Statistics Endpoint response");
+//        }
+//    }
 
 //    @Test
 //    public void testGetPlayerTankStatistics() {
