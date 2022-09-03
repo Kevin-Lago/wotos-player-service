@@ -9,8 +9,8 @@ import javax.persistence.Table;
 @Table(name = "expected_statistics")
 public class ExpectedStatistics {
     @Id
-    @Column(name = "tank_id", nullable = false, unique = true)
-    private Integer tankId;
+    @Column(name = "vehicle_id", nullable = false, unique = true)
+    private Integer vehicleId;
     @Column(name = "expected_defense", nullable = false)
     private Float expectedDefense;
     @Column(name = "expected_frag", nullable = false)
@@ -22,12 +22,12 @@ public class ExpectedStatistics {
     @Column(name = "expected_win_rate", nullable = false)
     private Float expectedWinRate;
 
-    public Integer getTankId() {
-        return tankId;
+    public Integer getVehicleId() {
+        return vehicleId;
     }
 
-    public void setTankId(Integer tankId) {
-        this.tankId = tankId;
+    public void setVehicleId(Integer vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public Float getExpectedDefense() {

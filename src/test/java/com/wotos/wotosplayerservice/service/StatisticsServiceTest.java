@@ -6,9 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
-import com.wotos.wotosplayerservice.util.model.wot.VehicleStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.VehicleStatistics;
 import com.wotos.wotosplayerservice.repo.ExpectedStatisticsRepository;
-import com.wotos.wotosplayerservice.repo.StatisticsSnapshotsRepository;
+import com.wotos.wotosplayerservice.repo.VehicleStatisticsSnapshotsRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +39,7 @@ public class StatisticsServiceTest {
     private final Random rng = new Random();
 
     @Autowired
-    private StatisticsSnapshotsRepository statisticsSnapshotsRepository;
+    private VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
     @Autowired
     private ExpectedStatisticsRepository expectedStatisticsRepository;
 
@@ -59,12 +59,12 @@ public class StatisticsServiceTest {
 
     @Before
     public void setUp() {
-        List<VehicleStatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
+        List<VehicleStatisticsSnapshot> statisticsSnapshotList = vehicleStatisticsSnapshotsRepository.findAll();
         statisticsSnapshotList.forEach(statisticsSnapshot ->
-                statisticsSnapshotsRepository.delete(statisticsSnapshot)
+                vehicleStatisticsSnapshotsRepository.delete(statisticsSnapshot)
         );
 
-        statisticsService = new StatisticsService(statisticsSnapshotsRepository, expectedStatisticsRepository);
+        statisticsService = new StatisticsService(vehicleStatisticsSnapshotsRepository, expectedStatisticsRepository);
         ReflectionTestUtils.setField(statisticsService, "SNAPSHOT_RATE", SNAPSHOT_RATE);
         ReflectionTestUtils.setField(statisticsService, "EXPECTED_STATISTICS_URL", EXPECTED_STATISTICS_URL);
         ReflectionTestUtils.setField(statisticsService, "WOT_TANK_STATISTICS_URL", WOT_TANK_STATISTICS_URL);
@@ -147,7 +147,7 @@ public class StatisticsServiceTest {
         VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
 
         statisticsSnapshot.setPlayerId(playerId);
-        statisticsSnapshot.setTankId(tankId);
+        statisticsSnapshot.setVehicleId(tankId);
         statisticsSnapshot.setTotalBattles(totalBattles);
         statisticsSnapshot.setSurvivedBattles(rng.nextInt(totalBattles));
         statisticsSnapshot.setKillDeathRatio(rng.nextFloat());

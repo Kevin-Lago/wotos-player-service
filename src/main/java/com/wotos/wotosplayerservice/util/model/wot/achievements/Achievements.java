@@ -1,4 +1,4 @@
-package com.wotos.wotosplayerservice.util.model.wot;
+package com.wotos.wotosplayerservice.util.model.wot.achievements;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

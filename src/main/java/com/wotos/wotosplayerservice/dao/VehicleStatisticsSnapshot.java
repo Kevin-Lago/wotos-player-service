@@ -3,7 +3,7 @@ package com.wotos.wotosplayerservice.dao;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "statistics_snapshots")
+@Table(name = "vehicle_statistics_snapshots")
 public class VehicleStatisticsSnapshot {
     @Id
     @GeneratedValue
@@ -11,8 +11,8 @@ public class VehicleStatisticsSnapshot {
     private Integer vehicleStatisticsSnapshotId;
     @Column(name = "player_id", nullable = false)
     private Integer playerId;
-    @Column(name = "tank_id", nullable = false)
-    private Integer tankId;
+    @Column(name = "vehicle_id", nullable = false)
+    private Integer vehicleId;
     @Column(name = "total_battles", nullable = false)
     private Integer totalBattles;
     @Column(name = "survived_battles", nullable = false)
@@ -58,12 +58,12 @@ public class VehicleStatisticsSnapshot {
         this.playerId = playerId;
     }
 
-    public Integer getTankId() {
-        return tankId;
+    public Integer getVehicleId() {
+        return vehicleId;
     }
 
-    public void setTankId(Integer tankId) {
-        this.tankId = tankId;
+    public void setVehicleId(Integer vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public Integer getTotalBattles() {

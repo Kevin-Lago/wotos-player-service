@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -21,13 +20,13 @@ import static org.junit.Assert.assertNull;
 public class StatisticsRepositoryTest {
 
     @Autowired
-    StatisticsSnapshotsRepository statisticsSnapshotsRepository;
+    VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
 
     @Before
     public void setUp() {
 
-        List<VehicleStatisticsSnapshot> statisticsSnapshotList = statisticsSnapshotsRepository.findAll();
-        statisticsSnapshotList.forEach(statisticsSnapshot -> statisticsSnapshotsRepository.delete(statisticsSnapshot));
+        List<VehicleStatisticsSnapshot> statisticsSnapshotList = vehicleStatisticsSnapshotsRepository.findAll();
+        statisticsSnapshotList.forEach(statisticsSnapshot -> vehicleStatisticsSnapshotsRepository.delete(statisticsSnapshot));
 
     }
 
@@ -81,13 +80,13 @@ public class StatisticsRepositoryTest {
     @Test
     public void testFindHighestTotalBattlesByPlayerAndTankId() {
         VehicleStatisticsSnapshot statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 1);
-        statisticsSnapshotsRepository.save(statisticsSnapshot);
+        vehicleStatisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 2);
-        statisticsSnapshotsRepository.save(statisticsSnapshot);
+        vehicleStatisticsSnapshotsRepository.save(statisticsSnapshot);
         statisticsSnapshot = buildRandomStatisticSnapshot(1, 1, 3);
-        statisticsSnapshotsRepository.save(statisticsSnapshot);
+        vehicleStatisticsSnapshotsRepository.save(statisticsSnapshot);
 
-        Optional<Integer> optionalStatisticsSnapshots = statisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndTankId(1, 1);
+        Optional<Integer> optionalStatisticsSnapshots = vehicleStatisticsSnapshotsRepository.findHighestTotalBattlesByPlayerAndVehicleId(1, 1);
         Integer highestBattles = optionalStatisticsSnapshots.orElse(0);
 
         assertThat(highestBattles).isEqualTo(3);
@@ -98,7 +97,7 @@ public class StatisticsRepositoryTest {
         Random rng = new Random();
 
         statisticsSnapshot.setPlayerId(playerId);
-        statisticsSnapshot.setTankId(tankId);
+        statisticsSnapshot.setVehicleId(tankId);
         statisticsSnapshot.setTotalBattles(totalBattles);
         statisticsSnapshot.setSurvivedBattles(rng.nextInt(totalBattles));
         statisticsSnapshot.setKillDeathRatio(rng.nextFloat());

@@ -1,5 +1,6 @@
 package com.wotos.wotosplayerservice.controller;
 
+import com.wotos.wotosplayerservice.dao.PlayerStatisticsSnapshot;
 import com.wotos.wotosplayerservice.dao.VehicleStatisticsSnapshot;
 import com.wotos.wotosplayerservice.service.StatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +20,19 @@ public class StatisticsController {
     @Autowired
     StatisticsService statisticsService;
 
-    @GetMapping
+    @GetMapping("/vehicles")
     public ResponseEntity<Map<Integer, List<VehicleStatisticsSnapshot>>> getPlayerTankStatistics(
-            @RequestParam("playerIds") List<Integer> playerIds,
-            @RequestParam("tankIds") List<Integer> tankIds
+            @RequestParam("accountIds") List<Integer> accountIds,
+            @RequestParam("vehicleIds") List<Integer> vehicleIds
     ) {
-        return statisticsService.getPlayerTankStatistics(playerIds, tankIds);
+        return statisticsService.getPlayerVehicleStatisticsSnapshots(accountIds, vehicleIds);
+    }
+
+    @GetMapping("/players")
+    public ResponseEntity<Map<Integer, List<PlayerStatisticsSnapshot>>> getPlayerStatistics(
+            @RequestParam("accountIds") List<Integer> accountIds
+    ) {
+        return statisticsService.getPlayerStatisticsSnapshots(accountIds);
     }
 
 }

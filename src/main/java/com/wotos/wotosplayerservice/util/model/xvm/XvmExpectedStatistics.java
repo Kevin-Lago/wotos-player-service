@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class XvmExpectedStatistics {
 
     @JsonProperty("IDNum")
-    private final Integer tankId;
+    private final Integer vehicleId;
     @JsonProperty("expDef")
     private final Float expectedDefense;
     @JsonProperty("expFrag")
@@ -17,8 +17,11 @@ public class XvmExpectedStatistics {
     @JsonProperty("expWinRate")
     private final Float expectedWinRate;
 
-    public XvmExpectedStatistics(Integer tankId, Float expectedDefense, Float expectedFrag, Float expectedSpot, Float expectedDamage, Float expectedWinRate) {
-        this.tankId = tankId;
+    public XvmExpectedStatistics(
+            Integer vehicleId, Float expectedDefense, Float expectedFrag,
+            Float expectedSpot, Float expectedDamage, Float expectedWinRate
+    ) {
+        this.vehicleId = vehicleId;
         this.expectedDefense = expectedDefense;
         this.expectedFrag = expectedFrag;
         this.expectedSpot = expectedSpot;
@@ -26,8 +29,8 @@ public class XvmExpectedStatistics {
         this.expectedWinRate = expectedWinRate;
     }
 
-    public Integer getTankId() {
-        return tankId;
+    public Integer getVehicleId() {
+        return vehicleId;
     }
 
     public Float getExpectedDefense() {

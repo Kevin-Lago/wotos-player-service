@@ -1,22 +1,9 @@
 package com.wotos.wotosplayerservice.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wotos.wotosplayerservice.util.model.wot.Player;
-import com.wotos.wotosplayerservice.util.model.wot.PlayerDetails;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 @Service
 public class PlayerService {
@@ -68,10 +55,10 @@ public class PlayerService {
 //        }
 //    }
 
-    public PlayerDetails fetchPlayerDetailsById(String accountId) {
-        return Objects.requireNonNull(
-                wotAccountsFeignClient.getPlayerDetails(APP_ID, "en", accountId).getBody()
-        ).getData().get(accountId);
-    }
+//    public PlayerDetails fetchPlayerDetailsById(String accountId) {
+//        return Objects.requireNonNull(
+//                wotAccountsFeignClient.getPlayerDetails(APP_ID, "en", accountId).getBody()
+//        ).getData().get(accountId);
+//    }
 
 }
