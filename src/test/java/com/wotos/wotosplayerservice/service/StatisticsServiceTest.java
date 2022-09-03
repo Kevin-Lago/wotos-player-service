@@ -57,18 +57,18 @@ public class StatisticsServiceTest {
     @Value("${env.test_wot_tank_id}")
     private String TEST_WOT_TANK_ID;
 
-    @Before
-    public void setUp() {
-        List<VehicleStatisticsSnapshot> statisticsSnapshotList = vehicleStatisticsSnapshotsRepository.findAll();
-        statisticsSnapshotList.forEach(statisticsSnapshot ->
-                vehicleStatisticsSnapshotsRepository.delete(statisticsSnapshot)
-        );
-
-        statisticsService = new StatisticsService(vehicleStatisticsSnapshotsRepository, expectedStatisticsRepository);
-        ReflectionTestUtils.setField(statisticsService, "SNAPSHOT_RATE", SNAPSHOT_RATE);
-        ReflectionTestUtils.setField(statisticsService, "EXPECTED_STATISTICS_URL", EXPECTED_STATISTICS_URL);
-        ReflectionTestUtils.setField(statisticsService, "WOT_TANK_STATISTICS_URL", WOT_TANK_STATISTICS_URL);
-    }
+//    @Before
+//    public void setUp() {
+//        List<VehicleStatisticsSnapshot> statisticsSnapshotList = vehicleStatisticsSnapshotsRepository.findAll();
+//        statisticsSnapshotList.forEach(statisticsSnapshot ->
+//                vehicleStatisticsSnapshotsRepository.delete(statisticsSnapshot)
+//        );
+//
+//        statisticsService = new StatisticsService(vehicleStatisticsSnapshotsRepository, expectedStatisticsRepository);
+//        ReflectionTestUtils.setField(statisticsService, "SNAPSHOT_RATE", SNAPSHOT_RATE);
+//        ReflectionTestUtils.setField(statisticsService, "EXPECTED_STATISTICS_URL", EXPECTED_STATISTICS_URL);
+//        ReflectionTestUtils.setField(statisticsService, "WOT_TANK_STATISTICS_URL", WOT_TANK_STATISTICS_URL);
+//    }
 
     @Test
     public void testExpectedStatisticsEndpoint() {
@@ -146,7 +146,7 @@ public class StatisticsServiceTest {
     private VehicleStatisticsSnapshot buildRandomStatisticSnapshot(Integer playerId, Integer tankId, Integer totalBattles) {
         VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
 
-        statisticsSnapshot.setPlayerId(playerId);
+        statisticsSnapshot.setAccountId(playerId);
         statisticsSnapshot.setVehicleId(tankId);
         statisticsSnapshot.setTotalBattles(totalBattles);
         statisticsSnapshot.setSurvivedBattles(rng.nextInt(totalBattles));

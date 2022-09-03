@@ -9,8 +9,8 @@ public class VehicleStatisticsSnapshot {
     @GeneratedValue
     @Column(name = "vehicle_statistics_snapshot_id")
     private Integer vehicleStatisticsSnapshotId;
-    @Column(name = "player_id", nullable = false)
-    private Integer playerId;
+    @Column(name = "account_id", nullable = false)
+    private Integer accountId;
     @Column(name = "vehicle_id", nullable = false)
     private Integer vehicleId;
     @Column(name = "total_battles", nullable = false)
@@ -41,6 +41,8 @@ public class VehicleStatisticsSnapshot {
     private Float averageCapturePoints;
     @Column(name = "dropped_capture_points", nullable = false)
     private Float averageDroppedCapturePoints;
+    @Column(name = "average_spotting", nullable = false)
+    private Float averageSpotting;
 
     public Integer getVehicleStatisticsSnapshotId() {
         return vehicleStatisticsSnapshotId;
@@ -50,12 +52,12 @@ public class VehicleStatisticsSnapshot {
         this.vehicleStatisticsSnapshotId = vehicleStatisticsSnapshotId;
     }
 
-    public Integer getPlayerId() {
-        return playerId;
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public Integer getVehicleId() {
@@ -176,5 +178,13 @@ public class VehicleStatisticsSnapshot {
 
     public void setAverageDroppedCapturePoints(Float averageDroppedCapturePoints) {
         this.averageDroppedCapturePoints = averageDroppedCapturePoints;
+    }
+
+    public Float getAverageSpotting() {
+        return averageSpotting;
+    }
+
+    public void setAverageSpotting(Float averageSpotting) {
+        this.averageSpotting = averageSpotting;
     }
 }

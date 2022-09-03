@@ -29,7 +29,7 @@ public interface WotAccountsFeignClient {
     );
 
     @GetMapping(value = "/info/", consumes = "application/json")
-    ResponseEntity<WotApiResponse<Map<String, PlayerDetails>>> getPlayerDetails(
+    ResponseEntity<WotApiResponse<Map<Integer, PlayerDetails>>> getPlayerDetails(
             @RequestParam("application_id") String appId,
             @RequestParam("access_token") String accessToken,
             @RequestParam("extra") String extra,
