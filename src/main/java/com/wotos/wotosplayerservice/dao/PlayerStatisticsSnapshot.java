@@ -8,9 +8,9 @@ public class PlayerStatisticsSnapshot {
     @Id
     @GeneratedValue
     @Column(name = "player_statistics_snapshot_id")
-    private Integer playerStatisticsSnapshot;
-    @Column(name = "player_id", nullable = false)
-    private Integer playerId;
+    private Integer playerStatisticsSnapshotId;
+    @Column(name = "account_id", nullable = false)
+    private Integer accountId;
     @Column(name = "total_battles", nullable = false)
     private Integer totalBattles;
     @Column(name = "survived_battles", nullable = false)
@@ -39,21 +39,23 @@ public class PlayerStatisticsSnapshot {
     private Float averageCapturePoints;
     @Column(name = "dropped_capture_points", nullable = false)
     private Float averageDroppedCapturePoints;
+    @Column(name = "average_spotting", nullable = false)
+    private Float averageSpotting;
 
-    public Integer getPlayerStatisticsSnapshot() {
-        return playerStatisticsSnapshot;
+    public Integer getPlayerStatisticsSnapshotId() {
+        return playerStatisticsSnapshotId;
     }
 
-    public void setPlayerStatisticsSnapshot(Integer playerStatisticsSnapshot) {
-        this.playerStatisticsSnapshot = playerStatisticsSnapshot;
+    public void setPlayerStatisticsSnapshotId(Integer playerStatisticsSnapshotId) {
+        this.playerStatisticsSnapshotId = playerStatisticsSnapshotId;
     }
 
-    public Integer getPlayerId() {
-        return playerId;
+    public Integer getAccountId() {
+        return accountId;
     }
 
-    public void setPlayerId(Integer playerId) {
-        this.playerId = playerId;
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
     }
 
     public Integer getTotalBattles() {
@@ -166,5 +168,13 @@ public class PlayerStatisticsSnapshot {
 
     public void setAverageDroppedCapturePoints(Float averageDroppedCapturePoints) {
         this.averageDroppedCapturePoints = averageDroppedCapturePoints;
+    }
+
+    public Float getAverageSpotting() {
+        return averageSpotting;
+    }
+
+    public void setAverageSpotting(Float averageSpotting) {
+        this.averageSpotting = averageSpotting;
     }
 }
