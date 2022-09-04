@@ -10,6 +10,7 @@ import com.wotos.wotosplayerservice.repo.VehicleStatisticsSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.feign.XvmExpectedStatisticsFeignClient;
+import com.wotos.wotosplayerservice.util.model.wot.WotApiResponse;
 import com.wotos.wotosplayerservice.util.model.wot.player.PlayerDetails;
 import com.wotos.wotosplayerservice.util.model.wot.statistics.PlayerStatistics;
 import com.wotos.wotosplayerservice.util.model.wot.statistics.VehicleStatistics;
@@ -32,28 +33,34 @@ public class StatisticsService {
     @Value("${env.snapshot_rate}")
     private Integer SNAPSHOT_RATE;
 
-    @Autowired
-    private WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
-    @Autowired
-    private WotAccountsFeignClient wotAccountsFeignClient;
-    @Autowired
-    private XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
+//    @Autowired
+    private final WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
+//    @Autowired
+    private final WotAccountsFeignClient wotAccountsFeignClient;
+//    @Autowired
+    private final XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
 
     private final VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
     private final PlayerStatisticsSnapshotsRepository playerStatisticsSnapshotsRepository;
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
 
     public StatisticsService(
+            WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient,
+            WotAccountsFeignClient wotAccountsFeignClient,
+            XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient,
             VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository,
             PlayerStatisticsSnapshotsRepository playerStatisticsSnapshotsRepository,
             ExpectedStatisticsRepository expectedStatisticsRepository
     ) {
+        this.wotPlayerVehiclesFeignClient = wotPlayerVehiclesFeignClient;
+        this.wotAccountsFeignClient = wotAccountsFeignClient;
+        this.xvmExpectedStatisticsFeignClient = xvmExpectedStatisticsFeignClient;
         this.vehicleStatisticsSnapshotsRepository = vehicleStatisticsSnapshotsRepository;
         this.playerStatisticsSnapshotsRepository = playerStatisticsSnapshotsRepository;
         this.expectedStatisticsRepository = expectedStatisticsRepository;
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         List<ExpectedStatistics> expectedStatistics = expectedStatisticsRepository.findAll();
 

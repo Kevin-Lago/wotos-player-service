@@ -2,6 +2,7 @@ package com.wotos.wotosplayerservice.config;
 
 import feign.Feign;
 import feign.Logger;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
