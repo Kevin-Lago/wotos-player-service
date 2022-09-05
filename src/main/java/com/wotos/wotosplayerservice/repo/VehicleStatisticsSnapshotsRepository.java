@@ -9,9 +9,13 @@ import java.util.Optional;
 
 public interface VehicleStatisticsSnapshotsRepository extends JpaRepository<VehicleStatisticsSnapshot, Integer> {
 
-    Optional<List<VehicleStatisticsSnapshot>> findByAccountIdAndVehicleIdIn(Integer playerId, List<Integer> vehicleIds);
+    Optional<List<VehicleStatisticsSnapshot>> findByAccountIdAndVehicleIdIn(Integer accountId, List<Integer> vehicleIds);
 
-    @Query(value = "SELECT MAX(total_battles) FROM vehicle_statistics_snapshots WHERE player_id = ?1 AND vehicle_id = ?2", nativeQuery = true)
-    Optional<Integer> findHighestTotalBattlesByAccountIdAndVehicleId(Integer playerId, Integer vehicleId);
+    Optional<List<VehicleStatisticsSnapshot>> findByAccountIdAndVehicleIdAndGameMode(Integer accountId, Integer vehicleId, String gameMode);
+
+    @Query(value = "SELECT MAX(total_battles) FROM vehicle_statistics_snapshots WHERE account_id = ?1 AND vehicle_id = ?2 AND game_mode = ?3", nativeQuery = true)
+    Optional<Integer> findHighestTotalBattlesByAccountIdAndVehicleId(Integer playerId, Integer vehicleId, String gameMode);
+
+
 
 }

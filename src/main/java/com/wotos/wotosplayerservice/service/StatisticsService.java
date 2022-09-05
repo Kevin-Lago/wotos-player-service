@@ -1,5 +1,6 @@
 package com.wotos.wotosplayerservice.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sun.istack.NotNull;
 import com.wotos.wotosplayerservice.dao.ExpectedStatistics;
 import com.wotos.wotosplayerservice.dao.PlayerStatisticsSnapshot;
@@ -11,6 +12,8 @@ import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.feign.XvmExpectedStatisticsFeignClient;
 import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotPlayerStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotStatisticsByGameMode;
 import com.wotos.wotosplayerservice.util.model.wot.statistics.WotVehicleStatistics;
 import com.wotos.wotosplayerservice.util.model.xvm.XvmExpectedStatistics;
 import org.springframework.beans.factory.annotation.Value;
@@ -62,7 +65,12 @@ public class StatisticsService {
         }
     }
 
+//    private void getStatisticsByGameMode(String gameMode) {
+//        // ToDo: map or figure out way to get game mode statistics before calculating OR Just go ahead and calculate statistics for every game mode.
+//    }
+
     public ResponseEntity<Map<Integer, List<PlayerStatisticsSnapshot>>> getPlayerStatisticsSnapshots(List<Integer> accountIds) {
+        // ToDo: Calculate recent wn8
         Map<Integer, List<PlayerStatisticsSnapshot>> playerStatisticsSnapshotsMap = new HashMap<>();
 
         for (Integer accountId : accountIds) {
@@ -81,6 +89,22 @@ public class StatisticsService {
         }
 
         return new ResponseEntity<>(playerStatisticsSnapshotsMap, HttpStatus.OK);
+    }
+
+    private static Map<String, WotStatisticsByGameMode> generatePlayerStatisticsByGameModeMap(WotPlayerStatistics wotPlayerStatistics) {
+        Map<String, WotStatisticsByGameMode> vehicleStatisticsByGameModeMap = new HashMap<>();
+
+        vehicleStatisticsByGameModeMap.put("regular_team", wotPlayerStatistics.getRegularTeam());
+        vehicleStatisticsByGameModeMap.put("stronghold_skirmish", wotPlayerStatistics.getStrongholdSkirmish());
+        vehicleStatisticsByGameModeMap.put("stronghold_defense", wotPlayerStatistics.getStrongholdDefense());
+        vehicleStatisticsByGameModeMap.put("clan", wotPlayerStatistics.getClan());
+        vehicleStatisticsByGameModeMap.put("all", wotPlayerStatistics.getAll());
+        vehicleStatisticsByGameModeMap.put("company", wotPlayerStatistics.getCompany());
+        vehicleStatisticsByGameModeMap.put("historical", wotPlayerStatistics.getHistorical());
+//        vehicleStatisticsByGameModeMap.put("global_map", wotPlayerStatistics.getGlobalmap());
+        vehicleStatisticsByGameModeMap.put("team", wotPlayerStatistics.getTeam());
+
+        return vehicleStatisticsByGameModeMap;
     }
 
     private static PlayerStatisticsSnapshot calculatePlayerStatisticsSnapshot(WotPlayerDetails wotPlayerDetails) {
@@ -164,48 +188,77 @@ public class StatisticsService {
         ).getData().get(accountId);
     }
 
-    public ResponseEntity<Map<Integer, List<VehicleStatisticsSnapshot>>> getPlayerVehicleStatisticsSnapshots(List<Integer> accountIds, List<Integer> vehicleIds) {
-        Map<Integer, List<VehicleStatisticsSnapshot>> vehicleStatisticsSnapshotsMap = new HashMap<>();
+    // ToDo: Simplify
+    public ResponseEntity<Map<Integer, Map<Integer, Map<String, List<VehicleStatisticsSnapshot>>>>> getPlayerVehicleStatisticsSnapshots(List<Integer> accountIds, List<Integer> vehicleIds) {
+        Map<Integer, Map<Integer, Map<String, List<VehicleStatisticsSnapshot>>>> vehicleStatisticsSnapshotsByPlayer = new HashMap<>();
 
         for (Integer accountId : accountIds) {
-            List<WotVehicleStatistics> wotVehicleStatistics = fetchVehicleStatistics(accountId, "", "", "", null, "", vehicleIds);
+            List<WotVehicleStatistics> wotVehicleStatisticsList = fetchVehicleStatistics(accountId, "", "", "", null, "", vehicleIds);
+            Map<Integer, Map<String, List<VehicleStatisticsSnapshot>>> vehicleStatisticsSnapshotsMap = new HashMap<>();
 
-            for (WotVehicleStatistics vehicle : wotVehicleStatistics) {
-                Integer maxBattles = vehicleStatisticsSnapshotsRepository.findHighestTotalBattlesByAccountIdAndVehicleId(accountId, vehicle.getVehicleId()).orElse(0);
+            for (WotVehicleStatistics wotVehicleStatistics : wotVehicleStatisticsList) {
+                Map<String, WotStatisticsByGameMode> wotStatisticsByGameModeMap = generateVehicleStatisticsByGameModeMap(wotVehicleStatistics);
+                Map<String, List<VehicleStatisticsSnapshot>> vehicleStatisticsSnapshotsByGameModeMap = new HashMap<>();
+                Integer vehicleId = wotVehicleStatistics.getVehicleId();
 
-                // ToDo: Maybe implement initial save for vehicles with battles < SNAPSHOT_RATE
-                if (vehicle.getAll().getBattles() - maxBattles > SNAPSHOT_RATE) {
-                    ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(vehicle.getVehicleId()).get();
-                    vehicleStatisticsSnapshotsRepository.save(calculateVehicleStatisticsSnapshot(vehicle, expectedStatistics));
-                }
+                wotStatisticsByGameModeMap.forEach((gameMode, wotStatisticsByGameMode) -> {
+                    Integer maxBattles = vehicleStatisticsSnapshotsRepository.findHighestTotalBattlesByAccountIdAndVehicleId(accountId, vehicleId, gameMode).orElse(0);
+
+                    if (wotStatisticsByGameMode.getBattles() - maxBattles > SNAPSHOT_RATE) {
+                        ExpectedStatistics expectedStatistics = expectedStatisticsRepository.findById(vehicleId).get();
+
+                        vehicleStatisticsSnapshotsRepository.save(calculateVehicleStatisticsSnapshot(
+                                accountId, vehicleId, gameMode, wotStatisticsByGameMode, expectedStatistics
+                        ));
+                    }
+
+                    List<VehicleStatisticsSnapshot> vehicleStatisticsSnapshotList = vehicleStatisticsSnapshotsRepository.findByAccountIdAndVehicleIdAndGameMode(accountId, vehicleId, gameMode).orElse(new ArrayList<>());
+                    vehicleStatisticsSnapshotsByGameModeMap.put(gameMode, vehicleStatisticsSnapshotList);
+                });
+
+                vehicleStatisticsSnapshotsMap.put(vehicleId, vehicleStatisticsSnapshotsByGameModeMap);
             }
 
-            List<VehicleStatisticsSnapshot> vehicleStatisticsSnapshots = vehicleStatisticsSnapshotsRepository.findByAccountIdAndVehicleIdIn(
-                    accountId, vehicleIds
-            ).orElse(new ArrayList<>());
-            vehicleStatisticsSnapshotsMap.put(accountId, vehicleStatisticsSnapshots);
+            vehicleStatisticsSnapshotsByPlayer.put(accountId, vehicleStatisticsSnapshotsMap);
         }
 
-        return new ResponseEntity<>(vehicleStatisticsSnapshotsMap, HttpStatus.OK);
+        return new ResponseEntity<>(vehicleStatisticsSnapshotsByPlayer, HttpStatus.OK);
+    }
+
+    private static Map<String, WotStatisticsByGameMode> generateVehicleStatisticsByGameModeMap(WotVehicleStatistics wotVehicleStatistics) {
+        Map<String, WotStatisticsByGameMode> vehicleStatisticsByGameModeMap = new HashMap<>();
+
+        vehicleStatisticsByGameModeMap.put("regular_team", wotVehicleStatistics.getRegularTeam());
+        vehicleStatisticsByGameModeMap.put("stronghold_skirmish", wotVehicleStatistics.getStrongholdSkirmish());
+        vehicleStatisticsByGameModeMap.put("stronghold_defense", wotVehicleStatistics.getStrongholdDefense());
+        vehicleStatisticsByGameModeMap.put("clan", wotVehicleStatistics.getClan());
+        vehicleStatisticsByGameModeMap.put("all", wotVehicleStatistics.getAll());
+        vehicleStatisticsByGameModeMap.put("company", wotVehicleStatistics.getCompany());
+//        vehicleStatisticsByGameModeMap.put("historical", wotVehicleStatistics.getHistorical());
+        vehicleStatisticsByGameModeMap.put("global_map", wotVehicleStatistics.getGlobalmap());
+        vehicleStatisticsByGameModeMap.put("team", wotVehicleStatistics.getTeam());
+
+        return vehicleStatisticsByGameModeMap;
     }
 
     private static VehicleStatisticsSnapshot calculateVehicleStatisticsSnapshot(
-            @NotNull WotVehicleStatistics wotVehicleStatistics,
+            @NotNull Integer accountId, @NotNull Integer vehicleId, @NotNull String gameMode,
+            @NotNull WotStatisticsByGameMode wotStatisticsByGameMode,
             @NotNull ExpectedStatistics expectedStatistics
     ) {
-        float wins = wotVehicleStatistics.getAll().getWins();
-        float battles = wotVehicleStatistics.getAll().getBattles();
-        float survivedBattles = wotVehicleStatistics.getAll().getSurvivedBattles();
-        float frags = wotVehicleStatistics.getAll().getFrags();
-        float spotted = wotVehicleStatistics.getAll().getSpotted();
-        float damage = wotVehicleStatistics.getAll().getDamageDealt();
-        float damageTaken = wotVehicleStatistics.getAll().getDamageReceived();
-        float dropperCapturePoints = wotVehicleStatistics.getAll().getDroppedCapturePoints();
-        float xp = wotVehicleStatistics.getAll().getXp();
-        float hits = wotVehicleStatistics.getAll().getHits();
-        float shots = wotVehicleStatistics.getAll().getShots();
-        float stunAssistedDamage = wotVehicleStatistics.getAll().getStunAssistedDamage();
-        float capturePoints = wotVehicleStatistics.getAll().getCapturePoints();
+        float wins = wotStatisticsByGameMode.getWins();
+        float battles = wotStatisticsByGameMode.getBattles();
+        float survivedBattles = wotStatisticsByGameMode.getSurvivedBattles();
+        float frags = wotStatisticsByGameMode.getFrags();
+        float spotted = wotStatisticsByGameMode.getSpotted();
+        float damage = wotStatisticsByGameMode.getDamageDealt();
+        float damageTaken = wotStatisticsByGameMode.getDamageReceived();
+        float dropperCapturePoints = wotStatisticsByGameMode.getDroppedCapturePoints();
+        float xp = wotStatisticsByGameMode.getXp();
+        float hits = wotStatisticsByGameMode.getHits();
+        float shots = wotStatisticsByGameMode.getShots();
+        float stunAssistedDamage = wotStatisticsByGameMode.getStunAssistedDamage();
+        float capturePoints = wotStatisticsByGameMode.getCapturePoints();
 
         float winLossRatio = wins / battles;
         float deaths = battles - survivedBattles == 0 ? 1 : battles - survivedBattles;
@@ -237,11 +290,8 @@ public class StatisticsService {
 
         float wn8 = (float) ((980 * DAMAGEc) + (210 * DAMAGEc * FRAGc) + (155 * FRAGc * SPOTc) + (75 * DEFENSEc * FRAGc) + (145 * Math.min(1.8, WINc)));
 
-        Integer vehicleId = wotVehicleStatistics.getVehicleId();
-        Integer accountId = wotVehicleStatistics.getAccountId();
-
         return buildVehicleStatisticsSnapshot(
-                accountId, vehicleId, wn8, (int) battles, killDeathRatio, hitMissRatio, winLossRatio,
+                accountId, vehicleId, gameMode, wn8, (int) battles, killDeathRatio, hitMissRatio, winLossRatio,
                 averageExperiencePerGame, averageDamagePerGame, averageKillsPerGame,
                 averageDamageReceivedPerGame, averageShotsPerGame, averageStunAssistedDamage,
                 averageCapturePointsPerGame, averageDroppedCapturePoints, (int) survivedBattles, averageSpottingPerGame
@@ -249,32 +299,34 @@ public class StatisticsService {
     }
 
     private static VehicleStatisticsSnapshot buildVehicleStatisticsSnapshot(
-            Integer accountId, Integer vehicleId, Float wn8, Integer battles, Float killDeathRatio, Float hitMissRatio, Float winLossRatio,
+            Integer accountId, Integer vehicleId, String gameMode, Float wn8, Integer battles, Float killDeathRatio, Float hitMissRatio, Float winLossRatio,
             Float averageExperiencePerGame, Float averageDamagePerGame, Float averageKillsPerGame,
             Float averageDamageReceivedPerGame, Float averageShotsPerGame, Float averageStunAssistedDamage,
             Float averageCapturePointsPerGame, Float averageDroppedCapturePoints, Integer survivedBattles, Float averageSpottingPerGame
     ) {
-        VehicleStatisticsSnapshot statisticsSnapshot = new VehicleStatisticsSnapshot();
+        VehicleStatisticsSnapshot vehicleStatisticsSnapshot = new VehicleStatisticsSnapshot();
 
-        statisticsSnapshot.setAccountId(accountId);
-        statisticsSnapshot.setVehicleId(vehicleId);
-        statisticsSnapshot.setTotalBattles(battles);
-        statisticsSnapshot.setSurvivedBattles(survivedBattles);
-        statisticsSnapshot.setAverageWn8(wn8);
-        statisticsSnapshot.setKillDeathRatio(killDeathRatio);
-        statisticsSnapshot.setHitMissRatio(hitMissRatio);
-        statisticsSnapshot.setWinLossRatio(winLossRatio);
-        statisticsSnapshot.setAverageExperience(averageExperiencePerGame);
-        statisticsSnapshot.setAverageDamage(averageDamagePerGame);
-        statisticsSnapshot.setAverageKills(averageKillsPerGame);
-        statisticsSnapshot.setAverageDamageReceived(averageDamageReceivedPerGame);
-        statisticsSnapshot.setAverageShots(averageShotsPerGame);
-        statisticsSnapshot.setAverageStunAssistedDamage(averageStunAssistedDamage);
-        statisticsSnapshot.setAverageCapturePoints(averageCapturePointsPerGame);
-        statisticsSnapshot.setAverageDroppedCapturePoints(averageDroppedCapturePoints);
-        statisticsSnapshot.setAverageSpotting(averageSpottingPerGame);
+        vehicleStatisticsSnapshot.setAccountId(accountId);
+        vehicleStatisticsSnapshot.setVehicleId(vehicleId);
+        vehicleStatisticsSnapshot.setGameMode(gameMode);
+        vehicleStatisticsSnapshot.setTotalBattles(battles);
+        vehicleStatisticsSnapshot.setCreateDate(new Date());
+        vehicleStatisticsSnapshot.setSurvivedBattles(survivedBattles);
+        vehicleStatisticsSnapshot.setAverageWn8(wn8);
+        vehicleStatisticsSnapshot.setKillDeathRatio(killDeathRatio);
+        vehicleStatisticsSnapshot.setHitMissRatio(hitMissRatio);
+        vehicleStatisticsSnapshot.setWinLossRatio(winLossRatio);
+        vehicleStatisticsSnapshot.setAverageExperience(averageExperiencePerGame);
+        vehicleStatisticsSnapshot.setAverageDamage(averageDamagePerGame);
+        vehicleStatisticsSnapshot.setAverageKills(averageKillsPerGame);
+        vehicleStatisticsSnapshot.setAverageDamageReceived(averageDamageReceivedPerGame);
+        vehicleStatisticsSnapshot.setAverageShots(averageShotsPerGame);
+        vehicleStatisticsSnapshot.setAverageStunAssistedDamage(averageStunAssistedDamage);
+        vehicleStatisticsSnapshot.setAverageCapturePoints(averageCapturePointsPerGame);
+        vehicleStatisticsSnapshot.setAverageDroppedCapturePoints(averageDroppedCapturePoints);
+        vehicleStatisticsSnapshot.setAverageSpotting(averageSpottingPerGame);
 
-        return statisticsSnapshot;
+        return vehicleStatisticsSnapshot;
     }
 
     private List<WotVehicleStatistics> fetchVehicleStatistics(
