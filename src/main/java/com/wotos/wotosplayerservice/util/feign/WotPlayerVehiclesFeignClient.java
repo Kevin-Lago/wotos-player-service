@@ -1,7 +1,7 @@
 package com.wotos.wotosplayerservice.util.feign;
 
 import com.wotos.wotosplayerservice.config.FeignConfig;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.VehicleStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotVehicleStatistics;
 import com.wotos.wotosplayerservice.util.model.wot.WotApiResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ import java.util.Map;
 public interface WotPlayerVehiclesFeignClient {
 
     @GetMapping("/stats/")
-    ResponseEntity<WotApiResponse<Map<Integer, List<VehicleStatistics>>>> getPlayerVehicleStatistics(
+    ResponseEntity<WotApiResponse<Map<Integer, List<WotVehicleStatistics>>>> getPlayerVehicleStatistics(
             @RequestParam("application_id") String appId,
             @RequestParam("account_id") Integer accountId,
             @RequestParam("access_token") String accessToken,

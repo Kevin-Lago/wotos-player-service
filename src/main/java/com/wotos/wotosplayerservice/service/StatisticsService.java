@@ -10,18 +10,14 @@ import com.wotos.wotosplayerservice.repo.VehicleStatisticsSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.feign.XvmExpectedStatisticsFeignClient;
-import com.wotos.wotosplayerservice.util.model.wot.player.PlayerDetails;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.PlayerStatistics;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.VehicleStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotVehicleStatistics;
 import com.wotos.wotosplayerservice.util.model.xvm.XvmExpectedStatistics;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.persistence.Column;
 import java.util.*;
 
 @Service
@@ -32,28 +28,31 @@ public class StatisticsService {
     @Value("${env.snapshot_rate}")
     private Integer SNAPSHOT_RATE;
 
-    @Autowired
-    private WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
-    @Autowired
-    private WotAccountsFeignClient wotAccountsFeignClient;
-    @Autowired
-    private XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
+    private final WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient;
+    private final WotAccountsFeignClient wotAccountsFeignClient;
+    private final XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient;
 
     private final VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository;
     private final PlayerStatisticsSnapshotsRepository playerStatisticsSnapshotsRepository;
     private final ExpectedStatisticsRepository expectedStatisticsRepository;
 
     public StatisticsService(
+            WotPlayerVehiclesFeignClient wotPlayerVehiclesFeignClient,
+            WotAccountsFeignClient wotAccountsFeignClient,
+            XvmExpectedStatisticsFeignClient xvmExpectedStatisticsFeignClient,
             VehicleStatisticsSnapshotsRepository vehicleStatisticsSnapshotsRepository,
             PlayerStatisticsSnapshotsRepository playerStatisticsSnapshotsRepository,
             ExpectedStatisticsRepository expectedStatisticsRepository
     ) {
+        this.wotPlayerVehiclesFeignClient = wotPlayerVehiclesFeignClient;
+        this.wotAccountsFeignClient = wotAccountsFeignClient;
+        this.xvmExpectedStatisticsFeignClient = xvmExpectedStatisticsFeignClient;
         this.vehicleStatisticsSnapshotsRepository = vehicleStatisticsSnapshotsRepository;
         this.playerStatisticsSnapshotsRepository = playerStatisticsSnapshotsRepository;
         this.expectedStatisticsRepository = expectedStatisticsRepository;
     }
 
-    @PostConstruct
+//    @PostConstruct
     public void init() {
         List<ExpectedStatistics> expectedStatistics = expectedStatisticsRepository.findAll();
 
@@ -67,12 +66,12 @@ public class StatisticsService {
         Map<Integer, List<PlayerStatisticsSnapshot>> playerStatisticsSnapshotsMap = new HashMap<>();
 
         for (Integer accountId : accountIds) {
-            PlayerDetails playerDetails = fetchPlayerDetails(accountId);
+            WotPlayerDetails wotPlayerDetails = fetchPlayerDetails(accountId);
             Integer maxBattles = playerStatisticsSnapshotsRepository.findHighestTotalBattlesByAccountId(accountId).orElse(0);
 
             // ToDo: Maybe implement initial save for players with battles < SNAPSHOT_RATE
-            if (playerDetails.getStatistics().getAll().getBattles() - maxBattles > SNAPSHOT_RATE) {
-                playerStatisticsSnapshotsRepository.save(calculatePlayerStatisticsSnapshot(playerDetails));
+            if (wotPlayerDetails.getStatistics().getAll().getBattles() - maxBattles > SNAPSHOT_RATE) {
+                playerStatisticsSnapshotsRepository.save(calculatePlayerStatisticsSnapshot(wotPlayerDetails));
             }
 
             List<PlayerStatisticsSnapshot> playerStatisticsSnapshots = playerStatisticsSnapshotsRepository.findByAccountId(
@@ -84,20 +83,20 @@ public class StatisticsService {
         return new ResponseEntity<>(playerStatisticsSnapshotsMap, HttpStatus.OK);
     }
 
-    private static PlayerStatisticsSnapshot calculatePlayerStatisticsSnapshot(PlayerDetails playerDetails) {
-        float wins = playerDetails.getStatistics().getAll().getWins();
-        float battles = playerDetails.getStatistics().getAll().getBattles();
-        float survivedBattles = playerDetails.getStatistics().getAll().getSurvivedBattles();
-        float frags = playerDetails.getStatistics().getAll().getFrags();
-        float spotted = playerDetails.getStatistics().getAll().getSpotted();
-        float damage = playerDetails.getStatistics().getAll().getDamageDealt();
-        float damageTaken = playerDetails.getStatistics().getAll().getDamageReceived();
-        float dropperCapturePoints = playerDetails.getStatistics().getAll().getDroppedCapturePoints();
-        float xp = playerDetails.getStatistics().getAll().getXp();
-        float hits = playerDetails.getStatistics().getAll().getHits();
-        float shots = playerDetails.getStatistics().getAll().getShots();
-        float stunAssistedDamage = playerDetails.getStatistics().getAll().getStunAssistedDamage();
-        float capturePoints = playerDetails.getStatistics().getAll().getCapturePoints();
+    private static PlayerStatisticsSnapshot calculatePlayerStatisticsSnapshot(WotPlayerDetails wotPlayerDetails) {
+        float wins = wotPlayerDetails.getStatistics().getAll().getWins();
+        float battles = wotPlayerDetails.getStatistics().getAll().getBattles();
+        float survivedBattles = wotPlayerDetails.getStatistics().getAll().getSurvivedBattles();
+        float frags = wotPlayerDetails.getStatistics().getAll().getFrags();
+        float spotted = wotPlayerDetails.getStatistics().getAll().getSpotted();
+        float damage = wotPlayerDetails.getStatistics().getAll().getDamageDealt();
+        float damageTaken = wotPlayerDetails.getStatistics().getAll().getDamageReceived();
+        float dropperCapturePoints = wotPlayerDetails.getStatistics().getAll().getDroppedCapturePoints();
+        float xp = wotPlayerDetails.getStatistics().getAll().getXp();
+        float hits = wotPlayerDetails.getStatistics().getAll().getHits();
+        float shots = wotPlayerDetails.getStatistics().getAll().getShots();
+        float stunAssistedDamage = wotPlayerDetails.getStatistics().getAll().getStunAssistedDamage();
+        float capturePoints = wotPlayerDetails.getStatistics().getAll().getCapturePoints();
 
         float winLossRatio = wins / battles;
         float deaths = battles - survivedBattles == 0 ? 1 : battles - survivedBattles;
@@ -116,7 +115,7 @@ public class StatisticsService {
         // ToDo: Either fetch from DB and average most recent snapshots of each tank or calculate from scratch
         float averageWn8 = 0;
 
-        Integer accountId = playerDetails.getAccountId();
+        Integer accountId = wotPlayerDetails.getAccountId();
 
         return buildPlayerStatisticsSnapshot(
                 accountId, (int) battles, (int) survivedBattles, killDeathRatio, hitMissRatio,
@@ -157,7 +156,7 @@ public class StatisticsService {
         return playerStatisticsSnapshot;
     }
 
-    private PlayerDetails fetchPlayerDetails(
+    private WotPlayerDetails fetchPlayerDetails(
             Integer accountId
     ) {
         return Objects.requireNonNull(
@@ -169,9 +168,9 @@ public class StatisticsService {
         Map<Integer, List<VehicleStatisticsSnapshot>> vehicleStatisticsSnapshotsMap = new HashMap<>();
 
         for (Integer accountId : accountIds) {
-            List<VehicleStatistics> vehicleStatistics = fetchVehicleStatistics(accountId, "", "", "", null, "", vehicleIds);
+            List<WotVehicleStatistics> wotVehicleStatistics = fetchVehicleStatistics(accountId, "", "", "", null, "", vehicleIds);
 
-            for (VehicleStatistics vehicle : vehicleStatistics) {
+            for (WotVehicleStatistics vehicle : wotVehicleStatistics) {
                 Integer maxBattles = vehicleStatisticsSnapshotsRepository.findHighestTotalBattlesByAccountIdAndVehicleId(accountId, vehicle.getVehicleId()).orElse(0);
 
                 // ToDo: Maybe implement initial save for vehicles with battles < SNAPSHOT_RATE
@@ -191,22 +190,22 @@ public class StatisticsService {
     }
 
     private static VehicleStatisticsSnapshot calculateVehicleStatisticsSnapshot(
-            @NotNull VehicleStatistics vehicleStatistics,
+            @NotNull WotVehicleStatistics wotVehicleStatistics,
             @NotNull ExpectedStatistics expectedStatistics
     ) {
-        float wins = vehicleStatistics.getAll().getWins();
-        float battles = vehicleStatistics.getAll().getBattles();
-        float survivedBattles = vehicleStatistics.getAll().getSurvivedBattles();
-        float frags = vehicleStatistics.getAll().getFrags();
-        float spotted = vehicleStatistics.getAll().getSpotted();
-        float damage = vehicleStatistics.getAll().getDamageDealt();
-        float damageTaken = vehicleStatistics.getAll().getDamageReceived();
-        float dropperCapturePoints = vehicleStatistics.getAll().getDroppedCapturePoints();
-        float xp = vehicleStatistics.getAll().getXp();
-        float hits = vehicleStatistics.getAll().getHits();
-        float shots = vehicleStatistics.getAll().getShots();
-        float stunAssistedDamage = vehicleStatistics.getAll().getStunAssistedDamage();
-        float capturePoints = vehicleStatistics.getAll().getCapturePoints();
+        float wins = wotVehicleStatistics.getAll().getWins();
+        float battles = wotVehicleStatistics.getAll().getBattles();
+        float survivedBattles = wotVehicleStatistics.getAll().getSurvivedBattles();
+        float frags = wotVehicleStatistics.getAll().getFrags();
+        float spotted = wotVehicleStatistics.getAll().getSpotted();
+        float damage = wotVehicleStatistics.getAll().getDamageDealt();
+        float damageTaken = wotVehicleStatistics.getAll().getDamageReceived();
+        float dropperCapturePoints = wotVehicleStatistics.getAll().getDroppedCapturePoints();
+        float xp = wotVehicleStatistics.getAll().getXp();
+        float hits = wotVehicleStatistics.getAll().getHits();
+        float shots = wotVehicleStatistics.getAll().getShots();
+        float stunAssistedDamage = wotVehicleStatistics.getAll().getStunAssistedDamage();
+        float capturePoints = wotVehicleStatistics.getAll().getCapturePoints();
 
         float winLossRatio = wins / battles;
         float deaths = battles - survivedBattles == 0 ? 1 : battles - survivedBattles;
@@ -238,8 +237,8 @@ public class StatisticsService {
 
         float wn8 = (float) ((980 * DAMAGEc) + (210 * DAMAGEc * FRAGc) + (155 * FRAGc * SPOTc) + (75 * DEFENSEc * FRAGc) + (145 * Math.min(1.8, WINc)));
 
-        Integer vehicleId = vehicleStatistics.getVehicleId();
-        Integer accountId = vehicleStatistics.getAccountId();
+        Integer vehicleId = wotVehicleStatistics.getVehicleId();
+        Integer accountId = wotVehicleStatistics.getAccountId();
 
         return buildVehicleStatisticsSnapshot(
                 accountId, vehicleId, wn8, (int) battles, killDeathRatio, hitMissRatio, winLossRatio,
@@ -278,7 +277,7 @@ public class StatisticsService {
         return statisticsSnapshot;
     }
 
-    private List<VehicleStatistics> fetchVehicleStatistics(
+    private List<WotVehicleStatistics> fetchVehicleStatistics(
             Integer accountId, String accessToken, String extra,
             String fields, Integer inGarage, String language, List<Integer> vehicleIds
     ) {

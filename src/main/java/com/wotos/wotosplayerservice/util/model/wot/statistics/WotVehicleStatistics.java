@@ -2,7 +2,7 @@ package com.wotos.wotosplayerservice.util.model.wot.statistics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class VehicleStatistics {
+public class WotVehicleStatistics {
 
     private final Integer frags;
     @JsonProperty("tank_id")
@@ -18,24 +18,24 @@ public class VehicleStatistics {
     @JsonProperty("account_id")
     private final Integer accountId;
     @JsonProperty("regular_team")
-    private final StatisticsByGameMode regularTeam;
+    private final WotStatisticsByGameMode regularTeam;
     @JsonProperty("stronghold_skirmish")
-    private final StatisticsByGameMode strongholdSkirmish;
+    private final WotStatisticsByGameMode strongholdSkirmish;
     @JsonProperty("stronghold_defense")
-    private final StatisticsByGameMode strongholdDefense;
-    private final StatisticsByGameMode clan;
-    private final StatisticsByGameMode all;
-    private final StatisticsByGameMode company;
-    private final StatisticsByGameMode historical;
-    private final StatisticsByGameMode globalmap;
-    private final StatisticsByGameMode team;
+    private final WotStatisticsByGameMode strongholdDefense;
+    private final WotStatisticsByGameMode clan;
+    private final WotStatisticsByGameMode all;
+    private final WotStatisticsByGameMode company;
+    private final WotStatisticsByGameMode historical;
+    private final WotStatisticsByGameMode globalmap;
+    private final WotStatisticsByGameMode team;
 
-    public VehicleStatistics(
+    public WotVehicleStatistics(
             Integer frags, Integer vehicleId, Boolean isInGarage, Integer markOfMastery,
-            Integer maxFrags, Integer maxXp, Integer accountId, StatisticsByGameMode regularTeam,
-            StatisticsByGameMode strongholdSkirmish, StatisticsByGameMode strongholdDefense,
-            StatisticsByGameMode clan, StatisticsByGameMode all, StatisticsByGameMode company,
-            StatisticsByGameMode historical, StatisticsByGameMode globalmap, StatisticsByGameMode team
+            Integer maxFrags, Integer maxXp, Integer accountId, WotStatisticsByGameMode regularTeam,
+            WotStatisticsByGameMode strongholdSkirmish, WotStatisticsByGameMode strongholdDefense,
+            WotStatisticsByGameMode clan, WotStatisticsByGameMode all, WotStatisticsByGameMode company,
+            WotStatisticsByGameMode historical, WotStatisticsByGameMode globalmap, WotStatisticsByGameMode team
     ) {
         this.frags = frags;
         this.vehicleId = vehicleId;
@@ -83,39 +83,39 @@ public class VehicleStatistics {
         return accountId;
     }
 
-    public StatisticsByGameMode getRegularTeam() {
+    public WotStatisticsByGameMode getRegularTeam() {
         return regularTeam;
     }
 
-    public StatisticsByGameMode getStrongholdSkirmish() {
+    public WotStatisticsByGameMode getStrongholdSkirmish() {
         return strongholdSkirmish;
     }
 
-    public StatisticsByGameMode getStrongholdDefense() {
+    public WotStatisticsByGameMode getStrongholdDefense() {
         return strongholdDefense;
     }
 
-    public StatisticsByGameMode getClan() {
+    public WotStatisticsByGameMode getClan() {
         return clan;
     }
 
-    public StatisticsByGameMode getAll() {
+    public WotStatisticsByGameMode getAll() {
         return all;
     }
 
-    public StatisticsByGameMode getCompany() {
+    public WotStatisticsByGameMode getCompany() {
         return company;
     }
 
-    public StatisticsByGameMode getHistorical() {
+    public WotStatisticsByGameMode getHistorical() {
         return historical;
     }
 
-    public StatisticsByGameMode getGlobalmap() {
+    public WotStatisticsByGameMode getGlobalmap() {
         return globalmap;
     }
 
-    public StatisticsByGameMode getTeam() {
+    public WotStatisticsByGameMode getTeam() {
         return team;
     }
 }

@@ -2,10 +2,10 @@ package com.wotos.wotosplayerservice.util.feign;
 
 import com.wotos.wotosplayerservice.config.FeignConfig;
 import com.wotos.wotosplayerservice.util.model.wot.*;
-import com.wotos.wotosplayerservice.util.model.wot.achievements.Achievements;
-import com.wotos.wotosplayerservice.util.model.wot.player.Player;
-import com.wotos.wotosplayerservice.util.model.wot.player.PlayerDetails;
-import com.wotos.wotosplayerservice.util.model.wot.player.PlayerVehicle;
+import com.wotos.wotosplayerservice.util.model.wot.achievements.WotAchievements;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayer;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerVehicle;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +20,7 @@ import java.util.Map;
 public interface WotAccountsFeignClient {
 
     @GetMapping(value = "/list/", consumes = "application/json")
-    ResponseEntity<WotApiResponse<List<Player>>> getPlayersByNickName(
+    ResponseEntity<WotApiResponse<List<WotPlayer>>> getPlayersByNickName(
             @RequestParam(name = "application_id") String appId,
             @RequestParam(name = "search") String nickname,
             @RequestParam(name = "language") String language,
@@ -29,7 +29,7 @@ public interface WotAccountsFeignClient {
     );
 
     @GetMapping(value = "/info/", consumes = "application/json")
-    ResponseEntity<WotApiResponse<Map<Integer, PlayerDetails>>> getPlayerDetails(
+    ResponseEntity<WotApiResponse<Map<Integer, WotPlayerDetails>>> getPlayerDetails(
             @RequestParam("application_id") String appId,
             @RequestParam("access_token") String accessToken,
             @RequestParam("extra") String extra,
@@ -39,7 +39,7 @@ public interface WotAccountsFeignClient {
     );
 
     @GetMapping(value = "/tanks/")
-    ResponseEntity<WotApiResponse<List<PlayerVehicle>>> getPlayerVehicles(
+    ResponseEntity<WotApiResponse<List<WotPlayerVehicle>>> getPlayerVehicles(
             @RequestParam("application_id") String appId,
             @RequestParam("account_id") Integer accountId,
             @RequestParam("access_token") String accessToken,
@@ -49,7 +49,7 @@ public interface WotAccountsFeignClient {
     );
 
     @GetMapping(value = "/achievements/")
-    ResponseEntity<WotApiResponse<Achievements>> getPlayerAchievements(
+    ResponseEntity<WotApiResponse<WotAchievements>> getPlayerAchievements(
             @RequestParam("application_id") String appId,
             @RequestParam("account_id") Integer accountId,
             @RequestParam("fields") String fields,
