@@ -2,6 +2,9 @@ package com.wotos.wotosplayerservice.util.model.wot.statistics;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WotVehicleStatistics {
 
     private final Integer frags;

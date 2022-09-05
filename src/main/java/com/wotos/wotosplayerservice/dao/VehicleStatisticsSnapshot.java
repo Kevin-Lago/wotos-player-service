@@ -1,6 +1,7 @@
 package com.wotos.wotosplayerservice.dao;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "vehicle_statistics_snapshots")
@@ -13,6 +14,10 @@ public class VehicleStatisticsSnapshot {
     private Integer accountId;
     @Column(name = "vehicle_id", nullable = false)
     private Integer vehicleId;
+    @Column(name = "game_mode", nullable = false)
+    private String gameMode;
+    @Column(name = "create_date", nullable = false)
+    private Date createDate;
     @Column(name = "total_battles", nullable = false)
     private Integer totalBattles;
     @Column(name = "survived_battles", nullable = false)
@@ -66,6 +71,22 @@ public class VehicleStatisticsSnapshot {
 
     public void setVehicleId(Integer vehicleId) {
         this.vehicleId = vehicleId;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(String gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
     }
 
     public Integer getTotalBattles() {
