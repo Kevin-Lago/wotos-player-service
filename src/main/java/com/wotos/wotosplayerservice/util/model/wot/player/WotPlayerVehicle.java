@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
 
-public class PlayerVehicle {
+public class WotPlayerVehicle {
 
     private final Map<String, Integer> statistics;
     @JsonProperty("marks_of_mastery")
@@ -12,7 +12,7 @@ public class PlayerVehicle {
     @JsonProperty("tank_id")
     private final Integer tankId;
 
-    public PlayerVehicle(Map<String, Integer> statistics, Integer marksOfMastery, Integer tankId) {
+    public WotPlayerVehicle(Map<String, Integer> statistics, Integer marksOfMastery, Integer tankId) {
         this.statistics = statistics;
         MarksOfMastery = marksOfMastery;
         this.tankId = tankId;

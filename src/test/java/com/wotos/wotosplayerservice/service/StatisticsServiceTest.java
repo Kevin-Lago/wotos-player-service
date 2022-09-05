@@ -10,17 +10,14 @@ import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.feign.XvmExpectedStatisticsFeignClient;
 import com.wotos.wotosplayerservice.util.model.wot.WotApiResponse;
-import com.wotos.wotosplayerservice.util.model.wot.player.PlayerDetails;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.PlayerStatistics;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.StatisticsByGameMode;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.VehicleStatistics;
-import com.wotos.wotosplayerservice.util.model.xvm.XvmApiResponse;
-import com.wotos.wotosplayerservice.util.model.xvm.XvmExpectedStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotPlayerStatistics;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotStatisticsByGameMode;
+import com.wotos.wotosplayerservice.util.model.wot.statistics.WotVehicleStatistics;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.persistence.Column;
-import javax.xml.ws.Response;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -78,12 +73,12 @@ public class StatisticsServiceTest {
     @Test
     public void getPlayerStatisticsSnapshotsTest() {
         // ToDo: Assure calculations are correct rather than building with random values
-        Map<Integer, PlayerDetails> playerDetailsMap = new HashMap<>();
+        Map<Integer, WotPlayerDetails> playerDetailsMap = new HashMap<>();
         playerDetailsMap.put(1, buildRandomPlayerDetails(1, 11));
 
-        WotApiResponse<Map<Integer, PlayerDetails>> wotApiResponse = new WotApiResponse("", "", "", playerDetailsMap);
+        WotApiResponse<Map<Integer, WotPlayerDetails>> wotApiResponse = new WotApiResponse("", "", "", playerDetailsMap);
 
-        ResponseEntity<WotApiResponse<Map<Integer, PlayerDetails>>> wotResponseEntity = new ResponseEntity(wotApiResponse, HttpStatus.FOUND);
+        ResponseEntity<WotApiResponse<Map<Integer, WotPlayerDetails>>> wotResponseEntity = new ResponseEntity(wotApiResponse, HttpStatus.FOUND);
         when(wotAccountsFeignClient.getPlayerDetails(
                 "", "", "", "", "", 1)
         ).thenReturn(wotResponseEntity);
@@ -114,17 +109,17 @@ public class StatisticsServiceTest {
     @Test
     public void getPlayerVehicleStatisticsSnapshotsTest() {
         // ToDo: Assure calculations are correct rather than building with random values
-        Map<Integer, List<VehicleStatistics>> vehicleStatisticsMap = new HashMap<>();
-        List<VehicleStatistics> vehicleStatistics = new ArrayList<>();
-        vehicleStatistics.add(buildRandomVehicleStatistics(1, 11));
-        vehicleStatistics.add(buildRandomVehicleStatistics(2, 11));
-        vehicleStatistics.add(buildRandomVehicleStatistics(3, 11));
-        vehicleStatisticsMap.put(1, vehicleStatistics);
-        WotApiResponse<Map<Integer, List<VehicleStatistics>>> wotApiResponse = new WotApiResponse("", "", "", vehicleStatisticsMap);
-        ResponseEntity<WotApiResponse<Map<Integer, List<VehicleStatistics>>>> wotResponseEntity = new ResponseEntity(wotApiResponse, HttpStatus.FOUND);
+        Map<Integer, List<WotVehicleStatistics>> vehicleStatisticsMap = new HashMap<>();
+        List<WotVehicleStatistics> wotVehicleStatistics = new ArrayList<>();
+        wotVehicleStatistics.add(buildRandomVehicleStatistics(1, 11));
+        wotVehicleStatistics.add(buildRandomVehicleStatistics(2, 11));
+        wotVehicleStatistics.add(buildRandomVehicleStatistics(3, 11));
+        vehicleStatisticsMap.put(1, wotVehicleStatistics);
+        WotApiResponse<Map<Integer, List<WotVehicleStatistics>>> wotApiResponse = new WotApiResponse("", "", "", vehicleStatisticsMap);
+        ResponseEntity<WotApiResponse<Map<Integer, List<WotVehicleStatistics>>>> wotResponseEntity = new ResponseEntity(wotApiResponse, HttpStatus.FOUND);
         Integer[] tankIdArray = {1, 2, 3};
         when(wotPlayerVehiclesFeignClient.getPlayerVehicleStatistics(
-                "", 1, "", "", "", 0, "", tankIdArray
+                "", 1, "", "", "", null, "", tankIdArray
                 )).thenReturn(wotResponseEntity);
 
         Optional<Integer> maxBattles = Optional.of(0);
@@ -158,6 +153,10 @@ public class StatisticsServiceTest {
         vehicleStatisticsSnapshotList.add(vehicleStatisticsSnapshot2);
         vehicleStatisticsSnapshotList.add(vehicleStatisticsSnapshot3);
 
+        List<Integer> accountIds = new ArrayList<>();
+        accountIds.add(1);
+        statisticsService.getPlayerVehicleStatisticsSnapshots(accountIds, tankIdList);
+
         when(vehicleStatisticsSnapshotsRepository.save(vehicleStatisticsSnapshot1)).thenReturn(vehicleStatisticsSnapshot1);
         when(vehicleStatisticsSnapshotsRepository.save(vehicleStatisticsSnapshot2)).thenReturn(vehicleStatisticsSnapshot2);
         when(vehicleStatisticsSnapshotsRepository.save(vehicleStatisticsSnapshot3)).thenReturn(vehicleStatisticsSnapshot3);
@@ -186,8 +185,8 @@ public class StatisticsServiceTest {
         return expectedStatistics;
     }
 
-    private VehicleStatistics buildRandomVehicleStatistics(Integer vehicleId, Integer battles) {
-        return new VehicleStatistics(
+    private WotVehicleStatistics buildRandomVehicleStatistics(Integer vehicleId, Integer battles) {
+        return new WotVehicleStatistics(
                 0,vehicleId,false,0,
                 0,0,0,null,
                 null,null,null,buildRandomStatisticsByGameMode(battles),
@@ -195,16 +194,16 @@ public class StatisticsServiceTest {
         );
     }
 
-    private PlayerDetails buildRandomPlayerDetails(Integer accountId, Integer battles) {
-        return new PlayerDetails(
+    private WotPlayerDetails buildRandomPlayerDetails(Integer accountId, Integer battles) {
+        return new WotPlayerDetails(
                 "", 0, 0,0,
                 0,false,0,0,
                 buildRandomPlayerStatistics(battles), "", 0
         );
     }
 
-    private PlayerStatistics buildRandomPlayerStatistics(Integer battles) {
-        return new PlayerStatistics(
+    private WotPlayerStatistics buildRandomPlayerStatistics(Integer battles) {
+        return new WotPlayerStatistics(
                 null,
                 buildRandomStatisticsByGameMode(battles),
                 null,
@@ -218,8 +217,8 @@ public class StatisticsServiceTest {
         );
     }
 
-    private StatisticsByGameMode buildRandomStatisticsByGameMode(Integer battles) {
-        return new StatisticsByGameMode(
+    private WotStatisticsByGameMode buildRandomStatisticsByGameMode(Integer battles) {
+        return new WotStatisticsByGameMode(
                 0,battles, 0,0,0,0,0,0,0,0,0,0,0,0,
                 0,0,0,0,0,0,0,0,0,0,
                 0f,0f,0f,0,0,0,0,0f,0
