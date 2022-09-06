@@ -30,7 +30,8 @@ public class WotVehicleStatistics {
     private final WotStatisticsByGameMode all;
     private final WotStatisticsByGameMode company;
     private final WotStatisticsByGameMode historical;
-    private final WotStatisticsByGameMode globalmap;
+    @JsonProperty("globalmap")
+    private final WotStatisticsByGameMode globalMap;
     private final WotStatisticsByGameMode team;
 
     public WotVehicleStatistics(
@@ -38,7 +39,7 @@ public class WotVehicleStatistics {
             Integer maxFrags, Integer maxXp, Integer accountId, WotStatisticsByGameMode regularTeam,
             WotStatisticsByGameMode strongholdSkirmish, WotStatisticsByGameMode strongholdDefense,
             WotStatisticsByGameMode clan, WotStatisticsByGameMode all, WotStatisticsByGameMode company,
-            WotStatisticsByGameMode historical, WotStatisticsByGameMode globalmap, WotStatisticsByGameMode team
+            WotStatisticsByGameMode historical, WotStatisticsByGameMode globalMap, WotStatisticsByGameMode team
     ) {
         this.frags = frags;
         this.vehicleId = vehicleId;
@@ -54,7 +55,7 @@ public class WotVehicleStatistics {
         this.all = all;
         this.company = company;
         this.historical = historical;
-        this.globalmap = globalmap;
+        this.globalMap = globalMap;
         this.team = team;
     }
 
@@ -115,7 +116,7 @@ public class WotVehicleStatistics {
     }
 
     public WotStatisticsByGameMode getGlobalmap() {
-        return globalmap;
+        return globalMap;
     }
 
     public WotStatisticsByGameMode getTeam() {

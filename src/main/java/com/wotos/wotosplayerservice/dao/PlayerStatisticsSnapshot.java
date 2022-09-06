@@ -11,6 +11,8 @@ public class PlayerStatisticsSnapshot {
     private Integer playerStatisticsSnapshotId;
     @Column(name = "account_id", nullable = false)
     private Integer accountId;
+    @Column(name = "game_mode", nullable = false)
+    private String gameMode;
     @Column(name = "total_battles", nullable = false)
     private Integer totalBattles;
     @Column(name = "survived_battles", nullable = false)
@@ -21,8 +23,8 @@ public class PlayerStatisticsSnapshot {
     private Float hitMissRatio;
     @Column(name = "win_loss_ratio", nullable = false)
     private Float winLossRatio;
-    @Column(name = "average_wn8", nullable = false)
-    private Float averageWn8;
+    @Column(name = "total_average_wn8", nullable = false)
+    private Float totalAverageWn8;
     @Column(name = "average_experience", nullable = false)
     private Float averageExperience;
     @Column(name = "average_damage", nullable = false)
@@ -56,6 +58,14 @@ public class PlayerStatisticsSnapshot {
 
     public void setAccountId(Integer accountId) {
         this.accountId = accountId;
+    }
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(String gameMode) {
+        this.gameMode = gameMode;
     }
 
     public Integer getTotalBattles() {
@@ -98,12 +108,12 @@ public class PlayerStatisticsSnapshot {
         this.winLossRatio = winLossRatio;
     }
 
-    public Float getAverageWn8() {
-        return averageWn8;
+    public Float getTotalAverageWn8() {
+        return totalAverageWn8;
     }
 
-    public void setAverageWn8(Float averageWn8) {
-        this.averageWn8 = averageWn8;
+    public void setTotalAverageWn8(Float totalAverageWn8) {
+        this.totalAverageWn8 = totalAverageWn8;
     }
 
     public Float getAverageExperience() {
