@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface PlayerStatisticsSnapshotsRepository extends JpaRepository<PlayerStatisticsSnapshot, Integer> {
 
-    Optional<List<PlayerStatisticsSnapshot>> findByAccountId(Integer accountId);
+    Optional<List<PlayerStatisticsSnapshot>> findByAccountIdAndGameMode(Integer accountId, String gameMode);
 
-    Optional<Integer> findHighestTotalBattlesByAccountId(Integer accountId);
+    Optional<Integer> findHighestTotalBattlesByAccountIdAndGameMode(Integer accountId, String gameMode);
 
 }

@@ -29,7 +29,7 @@ public class StatisticsController {
     }
 
     @GetMapping("/players")
-    public ResponseEntity<Map<Integer, List<PlayerStatisticsSnapshot>>> getPlayerStatistics(
+    public ResponseEntity<Map<Integer, Map<String, List<PlayerStatisticsSnapshot>>>> getPlayerStatistics(
             @RequestParam("accountIds") List<Integer> accountIds
     ) {
         return statisticsService.getPlayerStatisticsSnapshots(accountIds);
