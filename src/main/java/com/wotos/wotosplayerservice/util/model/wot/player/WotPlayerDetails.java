@@ -1,7 +1,6 @@
 package com.wotos.wotosplayerservice.util.model.wot.player;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.wotos.wotosplayerservice.util.model.wot.statistics.WotPlayerStatistics;
 
 public class WotPlayerDetails {
 
@@ -21,8 +20,6 @@ public class WotPlayerDetails {
     private final Integer globalRating;
     @JsonProperty("clan_id")
     private final Integer clanId;
-    @JsonProperty("statistics")
-    private final WotPlayerStatistics statistics;
     @JsonProperty("nickname")
     private final String nickname;
     @JsonProperty("logout_at")
@@ -31,7 +28,7 @@ public class WotPlayerDetails {
     public WotPlayerDetails(
             String clientLanguage, Integer lastBattleTime, Integer accountId,
             Integer createdAt, Integer updatedAt, Boolean isPrivateAccount,
-            Integer globalRating, Integer clanId, WotPlayerStatistics statistics,
+            Integer globalRating, Integer clanId,
             String nickname, Integer logoutAt
     ) {
         this.clientLanguage = clientLanguage;
@@ -42,7 +39,6 @@ public class WotPlayerDetails {
         this.isPrivateAccount = isPrivateAccount;
         this.globalRating = globalRating;
         this.clanId = clanId;
-        this.statistics = statistics;
         this.nickname = nickname;
         this.logoutAt = logoutAt;
     }
@@ -77,10 +73,6 @@ public class WotPlayerDetails {
 
     public Integer getClanId() {
         return clanId;
-    }
-
-    public WotPlayerStatistics getStatistics() {
-        return statistics;
     }
 
     public String getNickname() {
