@@ -6,9 +6,9 @@ public class WotPlayer {
 
     private final String nickname;
     @JsonProperty("account_id")
-    private final String accountId;
+    private final Integer accountId;
 
-    public WotPlayer(String nickname, String accountId) {
+    public WotPlayer(String nickname, Integer accountId) {
         this.nickname = nickname;
         this.accountId = accountId;
     }
@@ -17,7 +17,7 @@ public class WotPlayer {
         return nickname;
     }
 
-    public String getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 }
