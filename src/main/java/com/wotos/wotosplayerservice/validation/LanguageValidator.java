@@ -1,6 +1,6 @@
-package com.wotos.wotosstatisticsservice.validation;
+package com.wotos.wotosplayerservice.validation;
 
-import com.wotos.wotosstatisticsservice.validation.constraints.Language;
+import com.wotos.wotosplayerservice.validation.constraints.Language;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

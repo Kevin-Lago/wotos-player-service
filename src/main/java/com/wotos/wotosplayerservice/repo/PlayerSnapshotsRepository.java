@@ -1,2 +1,4 @@
-package com.wotos.wotosplayerservice.repo;public interface PlayerSnapshotsRepository {
+package com.wotos.wotosplayerservice.repo;
+
+public interface PlayerSnapshotsRepository {
 }
