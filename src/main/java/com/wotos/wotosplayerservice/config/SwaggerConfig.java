@@ -1,4 +1,4 @@
-package com.wotos.wotosstatisticsservice.config;
+package com.wotos.wotosplayerservice.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

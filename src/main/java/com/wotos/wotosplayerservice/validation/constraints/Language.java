@@ -1,13 +1,12 @@
-package com.wotos.wotosstatisticsservice.validation.constraints;
+package com.wotos.wotosplayerservice.validation.constraints;
 
-import com.wotos.wotosstatisticsservice.validation.LanguageValidator;
+import com.wotos.wotosplayerservice.validation.LanguageValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
 
-@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER,
-        ElementType.ANNOTATION_TYPE})
+@Target({ElementType.PARAMETER})
 @Constraint(validatedBy = LanguageValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

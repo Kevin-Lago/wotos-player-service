@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "players")
-public class Player {
+public class PlayerDetails {
 
     @Id
     @Column(name = "account_id", nullable = false)
@@ -21,8 +21,6 @@ public class Player {
     private Integer createdAt;
     @Column(name = "updated_at")
     private Integer updatedAt;
-    @Column(name = "is_private_account")
-    private Boolean isPrivateAccount;
     @Column(name = "global_rating")
     private Integer globalRating;
     @Column(name = "clan_id")
@@ -76,14 +74,6 @@ public class Player {
 
     public void setUpdatedAt(Integer updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public Boolean getPrivateAccount() {
-        return isPrivateAccount;
-    }
-
-    public void setPrivateAccount(Boolean privateAccount) {
-        isPrivateAccount = privateAccount;
     }
 
     public Integer getGlobalRating() {
