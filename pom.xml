@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.wotos</groupId>
-	<artifactId>wotos-playerDetails-service</artifactId>
+	<artifactId>wotos-player-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>wotos-playerDetails-service</name>
+	<name>wotos-player-service</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
