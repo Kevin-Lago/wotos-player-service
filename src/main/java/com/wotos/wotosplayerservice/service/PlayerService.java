@@ -1,9 +1,18 @@
 package com.wotos.wotosplayerservice.service;
 
+import com.wotos.wotosplayerservice.dao.Player;
+import com.wotos.wotosplayerservice.dao.PlayerAchievementsSnapshot;
+import com.wotos.wotosplayerservice.repo.PlayerAchievementsSnapshotRepository;
+import com.wotos.wotosplayerservice.repo.PlayerRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayer;
+import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class PlayerService {
@@ -11,54 +20,80 @@ public class PlayerService {
     @Value("${env.app_id}")
     private String APP_ID;
 
-    @Autowired
-    private WotAccountsFeignClient wotAccountsFeignClient;
+    private final WotAccountsFeignClient wotAccountsFeignClient;
+    private final WotPlayerVehiclesFeignClient playerVehiclesFeignClient;
 
-    public PlayerService() {}
+    private final PlayerAchievementsSnapshotRepository playerAchievementsSnapshotRepository;
+    private final PlayerRepository playerRepository;
 
-//    public List<Player> fetchListOfPlayersByNickname(String nickname) {
-//        String url = String.format(WOT_API_ACCOUNT_LIST_URL, APP_ID, LANGUAGE, nickname);
-//        String result = restTemplate.getForObject(url, String.class);
+    public PlayerService(
+            WotAccountsFeignClient wotAccountsFeignClient,
+            WotPlayerVehiclesFeignClient playerVehiclesFeignClient,
+
+            PlayerAchievementsSnapshotRepository playerAchievementsSnapshotRepository,
+            PlayerRepository playerRepository
+    ) {
+        this.wotAccountsFeignClient = wotAccountsFeignClient;
+        this.playerVehiclesFeignClient = playerVehiclesFeignClient;
+
+        this.playerAchievementsSnapshotRepository = playerAchievementsSnapshotRepository;
+        this.playerRepository = playerRepository;
+    }
+
+    public List<Player> getPlayersByNickname(String nickname) {
+        List<Player> players = playerRepository.findByNicknameContaining(nickname).orElseGet(null);
+
+        return players;
+    }
+
+    public Player getPlayerByNickname(String nickname) {
+        WotPlayer wotPlayer = fetchPlayerByNickname(nickname);
+        Player player = playerRepository.findByNickname(nickname).orElseGet(() -> {
+            Player newPlayer = new Player();
+
+            newPlayer.setAccountId(wotPlayer.getAccountId());
+            newPlayer.setNickname(wotPlayer.getNickname());
+
+            return playerRepository.save(newPlayer);
+        });
+
+        return player;
+    }
+
+    public List<PlayerAchievementsSnapshot> getPlayerAchievementsByAccountId(Integer accountId) {
+        List<PlayerAchievementsSnapshot> playerAchievementsSnapshots = playerAchievementsSnapshotRepository.findByAccountId(accountId).orElse(null);
+
+        return playerAchievementsSnapshots;
+    }
+
+//    public PlayerAchievementsSnapshot getLatestPlayerAchievementsByAccountId(Integer accountId) {
+//        PlayerAchievementsSnapshot playerAchievementsSnapshot = playerAchievementsSnapshotRepository.findLatestByAccountId(accountId).orElse(null);
 //
-//        try {
-//            JsonNode data = mapper.readTree(result).get("data");
-//            List<Player> Players = new ArrayList<>();
-//
-//            data.forEach(player -> {
-//                try {
-//                    Players.add(mapper.treeToValue(player, Player.class));
-//                } catch (JsonProcessingException e) {
-//                    e.printStackTrace();
-//                }
-//            });
-//
-//            return Players;
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//            return null;
-//        }
+//        return playerAchievementsSnapshot;
 //    }
 
-//    public Player fetchPlayerIDByNickname(String nickname) {
-////        String url = String.format(WOT_API_ACCOUNT_LIST_URL + PLAYER_EXACT_QUERY, APP_ID, LANGUAGE, nickname);
-//        String result = restTemplate.getForObject(WOT_API_ACCOUNT_LIST_URL, String.class, APP_ID, LANGUAGE, nickname + PLAYER_EXACT_QUERY);
-//
-//        try {
-//            JsonNode data = mapper.readTree(result).get("data");
-//            Player player = mapper.treeToValue(data, Player.class);
-//
-//            return player;
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//
-//            return null;
-//        }
-//    }
+    private WotPlayerDetails fetchPlayerDetailsById(Integer accountId) {
+        Map<Integer, WotPlayerDetails> wotPlayerDetails = wotAccountsFeignClient.getPlayerDetails(
+                APP_ID, "", "", "-statistics,-private", "", accountId
+        ).getBody().getData();
 
-//    public PlayerDetails fetchPlayerDetailsById(String accountId) {
-//        return Objects.requireNonNull(
-//                wotAccountsFeignClient.getPlayerDetails(APP_ID, "en", accountId).getBody()
-//        ).getData().get(accountId);
-//    }
+        return null;
+    }
+
+    private List<WotPlayer> fetchListOfPlayersByNickname(String nickname) {
+        List<WotPlayer> wotPlayers = wotAccountsFeignClient.getPlayersByNickName(
+                APP_ID, nickname, "", "100", "startswith"
+        ).getBody().getData();
+
+        return null;
+    }
+
+    private WotPlayer fetchPlayerByNickname(String nickname) {
+        List<WotPlayer> wotPlayer = wotAccountsFeignClient.getPlayersByNickName(
+                APP_ID, nickname, "", "1", "exact"
+        ).getBody().getData();
+
+        return wotPlayer.get(0);
+    }
 
 }

@@ -15,12 +15,12 @@ public interface WotPlayerVehiclesFeignClient {
     @GetMapping("/achievements/")
     ResponseEntity<WotApiResponse<String>> getPlayerVehicleAchievements(
             @RequestParam("application_id") String appId,
-            @RequestParam("account_id") String accountId,
+            @RequestParam("account_id") Integer accountId,
             @RequestParam("access_token") String accessToken,
             @RequestParam("fields") String fields,
             @RequestParam("in_garage") String inGarage,
             @RequestParam("language") String language,
-            @RequestParam("tank_id") String tankId
+            @RequestParam("tank_id") Integer[] tankIds
     );
 
 }
