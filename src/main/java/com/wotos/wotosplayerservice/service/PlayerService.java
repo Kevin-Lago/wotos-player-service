@@ -148,29 +148,6 @@ public class PlayerService {
         return playerDetails;
     }
 
-    public Map<Integer, List<PlayerAchievementsSnapshot>> getPlayerAchievementsSnapshotsByAccountIds(Integer[] accountIds) {
-        Map<Integer, List<PlayerAchievementsSnapshot>> playerAchievementsSnapshotsMap = new HashMap<>();
-
-        for (Integer accountId : accountIds) {
-            List<PlayerAchievementsSnapshot> playerAchievementsSnapshots = playerAchievementsSnapshotRepository.findByAccountId(accountId).orElse(null);
-
-            playerAchievementsSnapshotsMap.put(accountId, playerAchievementsSnapshots);
-        }
-
-        return playerAchievementsSnapshotsMap;
-    }
-
-    // ToDo: This
-    public Map<Integer, List<PlayerAchievementsSnapshot>> createPlayerAchievementsSnapshotsByAccountIds(Integer[] accountIds) {
-        Map<Integer, List<PlayerAchievementsSnapshot>> playerAchievementsSnapshotsMap = new HashMap<>();
-
-        for (Integer accountId : accountIds) {
-
-        }
-
-        return playerAchievementsSnapshotsMap;
-    }
-
     private Map<Integer, WotPlayerDetails> fetchPlayerDetailsMap(String accessToken, String[] extras, String[] fields, String language, Integer[] accountIds) {
         Map<Integer, WotPlayerDetails> wotPlayerDetailsMap = wotAccountsFeignClient.getPlayerDetails(
                 APP_ID, accessToken, extras, fields, language, accountIds

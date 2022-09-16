@@ -64,11 +64,4 @@ public class PlayerController {
         return playerService.getPlayersByNickname(nicknames, language, limit, searchType);
     }
 
-    @GetMapping("/achievements")
-    public Map<Integer, List<PlayerAchievementsSnapshot>> getPlayerAchievementsByAccountIds(
-            @PathParam("accountId") Integer[] accountIds
-    ) {
-        return playerService.getPlayerAchievementsSnapshotsByAccountIds(accountIds);
-    }
-
 }
