@@ -5,6 +5,7 @@ import com.wotos.wotosplayerservice.dao.PlayerAchievementsSnapshot;
 import com.wotos.wotosplayerservice.dao.PlayerSnapshot;
 import com.wotos.wotosplayerservice.repo.PlayerAchievementsSnapshotRepository;
 import com.wotos.wotosplayerservice.repo.PlayerDetailsRepository;
+import com.wotos.wotosplayerservice.repo.PlayerSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayer;
@@ -58,7 +59,7 @@ public class PlayerService {
         return playerMap;
     }
 
-    public Map<Integer, PlayerDetails> createPlayersByAccountId(Integer[] accountIds) {
+    public Map<Integer, PlayerDetails> createPlayersByAccountIds(Integer[] accountIds) {
         Map<Integer, PlayerDetails> playerMap = new HashMap<>();
         String[] fields = {
                 "account_id", "nickname", "client_language", "last_battle_time",
@@ -145,35 +146,6 @@ public class PlayerService {
         playerDetails.setLogoutAt(wotPlayerDetails.getLogoutAt());
 
         return playerDetails;
-    }
-
-    // ToDo: This
-    public Map<Integer, List<PlayerSnapshot>> getPlayerSnapshotsByAccountIds(Integer[] accountIds) {
-        Map<Integer, List<PlayerSnapshot>> playerSnapshotsMap = new HashMap<>();
-
-        for (Integer accountId : accountIds) {
-
-        }
-
-        return playerSnapshotsMap;
-    }
-
-    // ToDo: This
-    public Map<Integer, List<PlayerSnapshot>> createPlayerSnapshotsByAccountIds(Integer[] accountIds) {
-        Map<Integer, List<PlayerSnapshot>> playerSnapshotsMap = new HashMap<>();
-
-        for (Integer accountId : accountIds) {
-
-        }
-
-        return playerSnapshotsMap;
-    }
-
-    // ToDo: This
-    private PlayerSnapshot buildPlayerSnapshot() {
-        PlayerSnapshot playerSnapshot = new PlayerSnapshot();
-
-        return playerSnapshot;
     }
 
     public Map<Integer, List<PlayerAchievementsSnapshot>> getPlayerAchievementsSnapshotsByAccountIds(Integer[] accountIds) {

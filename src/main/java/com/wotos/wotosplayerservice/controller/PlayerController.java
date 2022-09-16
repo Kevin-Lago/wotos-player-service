@@ -33,7 +33,7 @@ public class PlayerController {
     }
 
     @GetMapping
-    public Map<Integer, PlayerDetails> getPlayersMapByAccountId(
+    public Map<Integer, PlayerDetails> getPlayersMapByAccountIds(
             @RequestParam(value = "accountIds") Integer[] accountIds
     ) {
         return playerService.getPlayersMapByAccountIds(accountIds);
@@ -43,7 +43,7 @@ public class PlayerController {
     public Map<Integer, PlayerDetails> createPlayersByAccountIds(
             @RequestParam(value = "accountIds") Integer[] accountIds
     ) {
-        return playerService.createPlayersByAccountId(accountIds);
+        return playerService.createPlayersByAccountIds(accountIds);
     }
 
     @PutMapping
