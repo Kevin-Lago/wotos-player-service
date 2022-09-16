@@ -1,12 +1,6 @@
 package com.wotos.wotosplayerservice.util.model.wot;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-
-import java.util.List;
-import java.util.Optional;
 
 public class WotApiResponse<T> {
 
