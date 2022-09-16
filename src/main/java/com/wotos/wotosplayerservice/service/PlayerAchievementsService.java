@@ -2,9 +2,7 @@ package com.wotos.wotosplayerservice.service;
 
 import com.wotos.wotosplayerservice.dao.PlayerAchievementsSnapshot;
 import com.wotos.wotosplayerservice.repo.PlayerAchievementsSnapshotRepository;
-import com.wotos.wotosplayerservice.repo.PlayerDetailsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
-import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

@@ -5,7 +5,6 @@ import com.wotos.wotosplayerservice.dao.PlayerSnapshot;
 import com.wotos.wotosplayerservice.repo.PlayerDetailsRepository;
 import com.wotos.wotosplayerservice.repo.PlayerSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
-import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayerDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

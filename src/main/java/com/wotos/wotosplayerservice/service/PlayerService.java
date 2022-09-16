@@ -1,11 +1,8 @@
 package com.wotos.wotosplayerservice.service;
 
 import com.wotos.wotosplayerservice.dao.PlayerDetails;
-import com.wotos.wotosplayerservice.dao.PlayerAchievementsSnapshot;
-import com.wotos.wotosplayerservice.dao.PlayerSnapshot;
 import com.wotos.wotosplayerservice.repo.PlayerAchievementsSnapshotRepository;
 import com.wotos.wotosplayerservice.repo.PlayerDetailsRepository;
-import com.wotos.wotosplayerservice.repo.PlayerSnapshotsRepository;
 import com.wotos.wotosplayerservice.util.feign.WotAccountsFeignClient;
 import com.wotos.wotosplayerservice.util.feign.WotPlayerVehiclesFeignClient;
 import com.wotos.wotosplayerservice.util.model.wot.player.WotPlayer;
